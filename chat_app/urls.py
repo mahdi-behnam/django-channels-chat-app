@@ -15,10 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from base import views
 
 urlpatterns = [
-    path('', views.redirect_view),
+    path('', include('base.urls')),
     path('admin/', admin.site.urls),
-    path('chat/', include('base.urls')),
 ]

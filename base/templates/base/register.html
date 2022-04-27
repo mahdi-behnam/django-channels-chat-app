@@ -1,0 +1,10 @@
+{% extends 'main.html' %} {% block content %}
+<h1>Register</h1>
+<form method="POST">
+  {% csrf_token %}
+  <input id="username-input" name="username" type="text" /><br />
+  <input id="password-input" name="password" type="text" /><br />
+  <input id="user-submit" type="submit" value="Enter" />
+</form>
+<script></script>
+{% endblock content %}
