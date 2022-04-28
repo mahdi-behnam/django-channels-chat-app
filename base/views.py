@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from .models import Room
 
 
 # Create your views here.
@@ -39,7 +41,7 @@ def register_view(request):
     if(request.user.is_authenticated):
         return redirect("index")
     elif(request.method == "POST"):
-        username = request.POST['username']
+        username = str.lower(request.POST['username'])
         password = request.POST['password']
         user = User.objects.create_user(username=username, password=password)
         login(request, user)
@@ -54,8 +56,22 @@ def logout_view(request):
     return redirect("login")
 
 
-def room(request, room_name):
+@login_required
+def create_room(request, target_username):
+    existing_room = Room.objects.filter(
+        users__username=request.user.username).filter(users__username=target_username)
+    if existing_room:
+        return redirect('room', existing_room[0].id)
+    else:
+        target_user = User.objects.get(username=target_username)
+        room = Room.objects.create()
+        room.users.add(request.user, target_user)
+        return redirect('room', room.id)
+
+
+@login_required
+def room(request, room_id):
     context = {
-        "room_name": room_name,
+        "room_id": room_id,
     }
     return render(request, "base/room.html", context)
