@@ -1,9 +1,13 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
-from .models import Room
+from django.urls import reverse
+from .models import Message, Room
+import mimetypes
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 # Create your views here.
@@ -71,7 +75,30 @@ def create_room(request, target_username):
 
 @login_required
 def room(request, room_id):
+    room = Room.objects.get(id=room_id)
+    messages = room.messages.all()
     context = {
         "room_id": room_id,
+        'messages': messages,
     }
     return render(request, "base/room.html", context)
+
+
+@login_required
+def room_upload_file(request, room_id):
+    if not request.FILES or request.method != "POST":
+        return redirect('room', room_id)
+    room = Room.objects.get(id=room_id)
+    user = request.user
+    uploaded_file = request.FILES['file']
+    message = Message.objects.create(room=room, user=user, media=uploaded_file)
+    mimetype_result = mimetypes.guess_type(message.media.name)[0].split(
+        '/')[0]
+    message.media_type = mimetype_result if mimetype_result in [
+        'image', 'video'] else None
+    message.save()
+    layer = get_channel_layer()
+    room_group_name = "chat_%s" % (room_id)
+    async_to_sync(layer.group_send)(room_group_name, {
+        'type': 'file_received', 'user': request.user.username, 'file_name': message.media.name, 'file_url': message.media.url, 'file_type': message.media_type})
+    return redirect('room', room_id)

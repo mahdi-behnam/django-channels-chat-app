@@ -9,4 +9,6 @@ urlpatterns = [
     path('chat/create_room/<str:target_username>/',
          views.create_room, name="create_room"),
     path('chat/<str:room_id>/', views.room, name="room"),
+    path('chat/<str:room_id>/upload/',
+         views.room_upload_file, name="room_upload"),
 ]

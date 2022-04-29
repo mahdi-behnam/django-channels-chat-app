@@ -1,19 +1,58 @@
-{% extends 'main.html' %} {% block content %}
-<textarea id="chat-log" cols="100" rows="20"></textarea><br />
-<input id="chat-message-input" type="text" size="100" /><br />
-<input id="chat-message-submit" type="button" value="Send" />
+{% extends 'main.html' %} {% block content %} 
+<div id="chat-log">
+  {% for message in messages %}
+  {{message.user.username}}: 
+  {% if message.media %}
+    {% if message.media_type == 'image' %}
+      <img width="200" height="200" src="{{message.media.url}}" />
+    {% elif message.media_type == 'video' %}
+      <video width="320" height="240" controls>
+        <source src="{{message.media.url}}" />
+        Your browser does not support the video tag.
+      </video>
+    {% else %}
+      <a href="{{message.media.url}}">{{message.media.name}}</a>
+    {% endif %}
+  {% else %}
+    {{message.text}}
+  {% endif %} 
+  <br />
+{% endfor %}
+</div>
+
+<input id="chat-message-input" type="text" size="50" />
+<input id="chat-message-submit" type="button" value="Send Message!" />
+<form
+  method="POST"
+  action="{% url 'room_upload' room_id %}"
+  enctype="multipart/form-data"
+  id="media-form"
+>
+  {% csrf_token %}
+  <input id="chat-media-input" type="file" name="file" />
+  <input id="chat-file-submit" type="submit" value="Send FILE!" />
+</form>
 <p>THIS IS THE ROOM_ID: {{room_id}}</p>
 {{ room_id|json_script:"room-id" }}
 <script>
   const roomID = JSON.parse(document.getElementById("room-id").textContent);
 
   const chatSocket = new WebSocket(
-    "ws://" + window.location.host + `/ws/chat${roomID}/`
+    "ws://" + window.location.host + `/ws/chat/${roomID}/`
   );
 
   chatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
-    document.querySelector("#chat-log").value += data.message + "\n";
+    console.log(data);
+    strToAdd = `${data.user}: ${data.message}<br />`;
+    if(data.file_type == 'image')
+      strToAdd = `${data.user}: <img src="${data.file_url}" width="200" height="200" /><br />`;
+    else if(data.file_type == 'video')
+      strToAdd = `${data.user}: <video width="200" height="200" controls><source src="${data.file_url}"/></video><br />`;
+    else if(data.file_type == null)
+      strToAdd = `${data.user}: <a href="${data.file_url}">${data.file_name}</a><br />`;
+
+    document.querySelector("#chat-log").innerHTML += strToAdd;
   };
 
   chatSocket.onclose = function (e) {
@@ -34,9 +73,14 @@
     chatSocket.send(
       JSON.stringify({
         message: message,
+        user: "{{request.user}}",
       })
     );
     messageInputDom.value = "";
   };
+
+  //MEDIA FORM
+  
+
 </script>
 {% endblock content %}

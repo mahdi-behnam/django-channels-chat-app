@@ -1,18 +1,31 @@
 from django.db import models
 from django.contrib.auth.models import User
+import mimetypes
 
 # Create your models here.
 
 
 class Message(models.Model):
+    room = models.ForeignKey(
+        'Room', null=True, on_delete=models.SET_NULL, related_name="messages")
     user = models.ForeignKey(
         User, null=True, on_delete=models.SET_NULL, related_name="messages")
-    text = models.CharField(max_length=255)
+    text = models.CharField(null=True, max_length=255)
     media = models.FileField(null=True)
+    media_type = models.CharField(max_length=20, default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.username + "\t" + self.text
+        file_url = self.media.url if self.media else ""
+        users_usernames = ""
+        for user in self.room.users.all():
+            users_usernames += user.username + " | "
+        return "{username}\t({users})\t\t{text}\t\tFILE_URL: {file_url}".format(
+            username=self.user.username,
+            users=users_usernames,
+            text=self.text,
+            file_url=file_url,
+        )
 
 
 class Room(models.Model):
