@@ -92,13 +92,17 @@ def room_upload_file(request, room_id):
     user = request.user
     uploaded_file = request.FILES['file']
     message = Message.objects.create(room=room, user=user, media=uploaded_file)
-    mimetype_result = mimetypes.guess_type(message.media.name)[0].split(
-        '/')[0]
-    message.media_type = mimetype_result if mimetype_result in [
-        'image', 'video'] else None
+    try:
+        mimetype_result = mimetypes.guess_type(message.media.name)[0].split(
+            '/')[0]
+    except:
+        mimetype_result = None
+    finally:
+        message.media_type = mimetype_result if mimetype_result in [
+            'image', 'video'] else None
     message.save()
     layer = get_channel_layer()
     room_group_name = "chat_%s" % (room_id)
     async_to_sync(layer.group_send)(room_group_name, {
         'type': 'file_received', 'user': request.user.username, 'file_name': message.media.name, 'file_url': message.media.url, 'file_type': message.media_type})
-    return redirect('room', room_id)
+    return HttpResponse(status=200)

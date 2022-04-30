@@ -80,7 +80,14 @@
   };
 
   //MEDIA FORM
-  
+  document.querySelector('#media-form').addEventListener('submit',(e) => {
+    const form = e.target
+    fetch(form.action, {
+      method: form.method,
+      body: new FormData(form),
+    }).catch((e) => console.log(e));
+    e.preventDefault()
+  })
 
 </script>
 {% endblock content %}
