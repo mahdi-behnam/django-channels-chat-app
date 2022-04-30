@@ -45,13 +45,12 @@
     const data = JSON.parse(e.data);
     console.log(data);
     strToAdd = `${data.user}: ${data.message}<br />`;
-    if(data.file_type == 'image')
+    if(data.file_type === 'image')
       strToAdd = `${data.user}: <img src="${data.file_url}" width="200" height="200" /><br />`;
-    else if(data.file_type == 'video')
+    else if(data.file_type === 'video')
       strToAdd = `${data.user}: <video width="200" height="200" controls><source src="${data.file_url}"/></video><br />`;
-    else if(data.file_type == null)
+    else if(data.file_type === null)
       strToAdd = `${data.user}: <a href="${data.file_url}">${data.file_name}</a><br />`;
-
     document.querySelector("#chat-log").innerHTML += strToAdd;
   };
 
