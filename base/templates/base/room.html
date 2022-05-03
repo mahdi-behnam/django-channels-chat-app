@@ -1,4 +1,6 @@
-{% extends 'main.html' %} {% block content %} 
+{% extends 'main.html' %} 
+{% load static %}
+{% block content %} 
 <div id="chat-log">
   {% for message in messages %}
   {{message.user.username}}: 
@@ -34,59 +36,21 @@
 </form>
 <p>THIS IS THE ROOM_ID: {{room_id}}</p>
 {{ room_id|json_script:"room-id" }}
-<script>
-  const roomID = JSON.parse(document.getElementById("room-id").textContent);
-
-  const chatSocket = new WebSocket(
-    "ws://" + window.location.host + `/ws/chat/${roomID}/`
-  );
-
-  chatSocket.onmessage = function (e) {
-    const data = JSON.parse(e.data);
-    console.log(data);
-    strToAdd = `${data.user}: ${data.message}<br />`;
-    if(data.file_type === 'image')
-      strToAdd = `${data.user}: <img src="${data.file_url}" width="200" height="200" /><br />`;
-    else if(data.file_type === 'video')
-      strToAdd = `${data.user}: <video width="200" height="200" controls><source src="${data.file_url}"/></video><br />`;
-    else if(data.file_type === null)
-      strToAdd = `${data.user}: <a href="${data.file_url}">${data.file_name}</a><br />`;
-    document.querySelector("#chat-log").innerHTML += strToAdd;
-  };
-
-  chatSocket.onclose = function (e) {
-    console.error("Chat socket closed unexpectedly");
-  };
-
-  document.querySelector("#chat-message-input").focus();
-  document.querySelector("#chat-message-input").onkeyup = function (e) {
-    if (e.keyCode === 13) {
-      // enter, return
-      document.querySelector("#chat-message-submit").click();
-    }
-  };
-
-  document.querySelector("#chat-message-submit").onclick = function (e) {
-    const messageInputDom = document.querySelector("#chat-message-input");
-    const message = messageInputDom.value;
-    chatSocket.send(
-      JSON.stringify({
-        message: message,
-        user: "{{request.user}}",
-      })
-    );
-    messageInputDom.value = "";
-  };
-
-  //MEDIA FORM
-  document.querySelector('#media-form').addEventListener('submit',(e) => {
-    const form = e.target
-    fetch(form.action, {
-      method: form.method,
-      body: new FormData(form),
-    }).catch((e) => console.log(e));
-    e.preventDefault()
-  })
-
-</script>
+<button id="make-offer">Make Offer</button>
+<button id="make-answer">Make Answer</button>
+<button id="add-answer">Add Answer</button>
+<button id="logger">Log Everything</button>
+<button id="start-call">START CALL</button>
+<button id="end-call">END CALL</button>
+<br>
+<p>Offer</p>
+<textarea id="offer" type="text" rows="10" cols="80"></textarea>
+<br>
+<p>Answer</p>
+<textarea id="answer" type="text" rows="10" cols="80"></textarea>
+<div id="videos">
+  <video id="local-user" autoplay playsinline></video>
+  <video id="remote-user" autoplay playsinline></video>
+</div>
+<script src="{% static 'scripts/room.js' %}" ></script>
 {% endblock content %}
