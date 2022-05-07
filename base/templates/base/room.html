@@ -36,21 +36,16 @@
 </form>
 <p>THIS IS THE ROOM_ID: {{room_id}}</p>
 {{ room_id|json_script:"room-id" }}
-<button id="make-offer">Make Offer</button>
-<button id="make-answer">Make Answer</button>
-<button id="add-answer">Add Answer</button>
-<button id="logger">Log Everything</button>
 <button id="start-call">START CALL</button>
 <button id="end-call">END CALL</button>
+<button id="logger">Log Everything</button>
 <br>
-<p>Offer</p>
-<textarea id="offer" type="text" rows="10" cols="80"></textarea>
-<br>
-<p>Answer</p>
-<textarea id="answer" type="text" rows="10" cols="80"></textarea>
 <div id="videos">
   <video id="local-user" autoplay playsinline></video>
   <video id="remote-user" autoplay playsinline></video>
 </div>
-<script src="{% static 'scripts/room.js' %}" ></script>
+<script>
+  username = "{{request.user}}"
+</script>
+<script src="{% static 'scripts/main.js' %}" ></script>
 {% endblock content %}
