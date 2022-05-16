@@ -1,0 +1,15 @@
+{% extends 'main.html' %} {% block content %}
+<form method="GET">
+  <input type="text" name="q" />
+  <button type="submit">Search User</button>
+</form>
+{{users_result}}
+<ul>
+  {% for user in users_result %}
+  <li><a href="{% url 'create_room' user %}">{{user}}</a></li>
+  {% endfor %}
+</ul>
+<br /><a href="{% url 'logout' %}">logout from {{request.user.username}}</a>
+<h1>{{chats}}</h1>
+<script></script>
+{% endblock content %}

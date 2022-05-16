@@ -10,9 +10,6 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
 
-# Create your views here.
-
-
 @login_required
 def index(request):
     q = request.GET.get('q')
