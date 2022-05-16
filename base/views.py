@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
 from .models import Message, Room
 import mimetypes
 from channels.layers import get_channel_layer
@@ -41,8 +40,13 @@ def login_view(request):
 def register_view(request):
     if(request.user.is_authenticated):
         return redirect("index")
+
     elif(request.method == "POST"):
         username = str.lower(request.POST['username'])
+        userExists = True if User.objects.filter(
+            username=username).exists() else False
+        if userExists:
+            return redirect("register")
         password = request.POST['password']
         user = User.objects.create_user(username=username, password=password)
         login(request, user)
@@ -72,6 +76,8 @@ def create_room(request, target_username):
 
 @login_required
 def room(request, room_id):
+    if not request.user.is_staff:
+        return redirect("index")
     room = Room.objects.get(id=room_id)
     messages = room.messages.all()
     context = {
