@@ -14,9 +14,12 @@ def index(request):
     q = request.GET.get('q')
     username_query = q if (q is not None and not q.isspace()) else ''
     users_result = User.objects.filter(username__icontains=username_query)
+
+    chats = request.user.rooms.exclude(messages__isnull=True)
+
     context = {
         "users_result": users_result,
-        "chats": "Chat Queryset",
+        "chats": chats,
     }
     return render(request, "base/index.html", context)
 
@@ -76,23 +79,31 @@ def create_room(request, target_username):
 
 @login_required
 def room(request, room_id):
-    if not request.user.is_staff:
+    user = request.user
+    chats = request.user.rooms.exclude(messages__isnull=True)
+    try:
+        room = user.rooms.get(id=room_id)
+    except Room.DoesNotExist:
         return redirect("index")
-    room = Room.objects.get(id=room_id)
     messages = room.messages.all()
     context = {
-        "room_id": room_id,
+        "room_id": int(room_id),
         'messages': messages,
+        "chats": chats,
+        'current_user': request.user.username,
     }
-    return render(request, "base/room.html", context)
+    return render(request, "base/index.html", context)
 
 
 @login_required
 def room_upload_file(request, room_id):
     if not request.FILES or request.method != "POST":
         return redirect('room', room_id)
-    room = Room.objects.get(id=room_id)
     user = request.user
+    try:
+        room = user.rooms.get(id=room_id)
+    except Room.DoesNotExist:
+        return redirect("index")
     uploaded_file = request.FILES['file']
     message = Message.objects.create(room=room, user=user, media=uploaded_file)
     try:

@@ -96,9 +96,15 @@ body {
 }
 
 .chat-thumbnail {
+  color: var(--primary-white);
+  text-decoration: none;
   cursor: pointer;
   height: var(--chat-thumbnail-height);
   transition: all ease 0.3s;
+}
+.chat-thumbnail:hover {
+  color: unset;
+  background-color: hsl(216, 18%, 20%);
 }
 .chat-thumbnail p {
   margin: 0;

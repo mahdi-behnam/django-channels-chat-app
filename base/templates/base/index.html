@@ -31,13 +31,19 @@
           <ul class="chat-thumbnails-list list-unstyled">
             {% for chat in  chats %}
             <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
+              <a href={% url 'room' chat.id  %} class="chat-thumbnail p-2 d-flex align-items-center">
                 <img
                   class="avatar rounded-circle"
                   src="https://picsum.photos/200"
                 />
                 <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
+                  <p class="chat-title">
+                    {% for user in chat.users.all %}
+                      {% if request.user != user %}
+                        {{user}}
+                      {% endif %}
+                    {% endfor %}
+                  </p>
                   <div class="d-flex align-items-center">
                     <p class="chat-last-message ps-2">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -46,7 +52,7 @@
                     <span class="new-message-badge ms-auto">+99</span>
                   </div>
                 </div>
-              </div>
+              </a>
               <hr class="hr-line mx-auto my-0" />
             </li>
             {% endfor %}
@@ -56,7 +62,7 @@
       <!-- ...for Desktops -->
       <div
         id="desktop-people-list"
-        class="app-left-col d-none d-lg-block col-3 bg-my-black pe-0 text-white"
+        class="app-left-col d-none d-lg-block col-3 bg-my-black px-0 text-white"
       >
         <div class="d-flex flex-column">
           <div class="app-header d-flex flex-column shadow-sm bg-my-black">
@@ -79,443 +85,39 @@
             </div>
           </div>
           <ul class="chat-thumbnails-list list-unstyled">
+            {% for chat in  chats %}
             <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
+              <a href={% url 'room' chat.id  %} 
+                {% if chat.id == room_id %}
+                  class="chat-thumbnail selected p-2 d-flex align-items-center"
+                {% else %}
+                  class="chat-thumbnail p-2 d-flex align-items-center"
+                {% endif %}
+                >
                 <img
                   class="avatar rounded-circle"
                   src="https://picsum.photos/200"
                 />
                 <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
+                  <p class="chat-title">
+                    {% for user in chat.users.all %}
+                      {% if request.user != user %}
+                        {{user}}
+                      {% endif %}
+                    {% endfor %}
+                  </p>
                   <div class="d-flex align-items-center">
                     <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Dolor aperiam quas nisi optio excepturi porro?
                     </p>
-                    <span class="new-message-badge">+99</span>
+                    <span class="new-message-badge ms-auto">+99</span>
                   </div>
                 </div>
-              </div>
+              </a>
               <hr class="hr-line mx-auto my-0" />
             </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
-            <li>
-              <div class="chat-thumbnail p-2 d-flex align-items-center">
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">Mahdi Behnam</p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Saepe, eligendi.
-                    </p>
-                    <span class="new-message-badge">+99</span>
-                  </div>
-                </div>
-              </div>
-              <hr class="hr-line mx-auto my-0" />
-            </li>
+            {% endfor %}
           </ul>
         </div>
       </div>
@@ -575,151 +177,69 @@
             </div>
           </div>
           <div class="chat-messages imessage overflow-auto">
-            <p class="from-me no-tail">
-              Back at the hospital, Diego sneaks out of Cyntheeah&rsquo;s room
-              with a copy of her chart under his arm, right in front of the
-              nurse&rsquo;s station, but no one notices cuz all the nurses are
-              gossiping. Again, worst. Hospital. Ever.
-            </p>
-            <p class="from-me no-tail">
-              Diego sneaks around the corner to the vending machine, looks in
-              the chart again, with one eyebrow raised and a smirk, and scheming
-              music playing in the background...
-            </p>
-            <p class="from-me">[bad music]...[Commercial]</p>
-            <p class="from-them">This is awesome</p>
-            <p class="from-me no-tail">
-              Brock returns to his home which is amazingly well-lit with track
-              lighting in every room. His maid Juanita tells him that &ldquo;Ze
-              strange man come by ask question about se&ntilde;or Brock&rdquo;.
-              Brock makes a call and plans a meeting...
-            </p>
-            <p class="from-me no-tail">
-              Meanwhile at the beach cabana, Erika, Johnny and friends makes
-              plans for a weekend getaway cruise as all 17-year-olds do...
-            </p>
-            <p class="from-me">
-              Incidentally, last week Erika and Johnny were 10 years-old, but
-              kids don&rsquo;t age fast enough for daytime drama, so now they
-              are 17! Overnight! Like magic!
-            </p>
-            <p class="from-them no-tail">This is GOLD!</p>
-            <p class="from-them no-tail">&#128512;</p>
-            <p class="from-them no-tail">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. In,
-              perspiciatis!
-            </p>
-            <p class="from-them">Lorem, ipsum dolor.</p>
-            <p class="from-me no-tail">
-              Incidentally, last week Erika and Johnny were 10 years-old, but
-              kids don&rsquo;t age fast enough for daytime drama, so now they
-              are 17! Overnight! Like magic!
-            </p>
-            <p class="from-me">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste at
-              quod id minus voluptate, dignissimos optio sit consequatur eveniet
-              aliquam!
-            </p>
-            <p class="from-me">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste at
-              quod id minus voluptate, dignissimos optio sit consequatur eveniet
-              aliquam!
-            </p>
-            <div class="from-me img-container">
-              <a
-                href="https://i.picsum.photos/id/366/2000/2000.jpg?hmac=VDsuEH3DWGI-oETDFdxhf242P4MTHeVoCAY7rRkYki0"
-                target="_blank"
-              >
-                <img
-                  src="https://i.picsum.photos/id/366/2000/2000.jpg?hmac=VDsuEH3DWGI-oETDFdxhf242P4MTHeVoCAY7rRkYki0"
-                />
-              </a>
-            </div>
-            <p class="from-them">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste at
-              quod id minus!
-            </p>
-            <div class="from-them img-container">
-              <a
-                href="https://i.picsum.photos/id/366/2000/2000.jpg?hmac=VDsuEH3DWGI-oETDFdxhf242P4MTHeVoCAY7rRkYki0"
-                target="_blank"
-              >
-                <img
-                  src="https://i.picsum.photos/id/366/2000/2000.jpg?hmac=VDsuEH3DWGI-oETDFdxhf242P4MTHeVoCAY7rRkYki0"
-                />
-              </a>
-            </div>
-            <p class="from-them">
-              Lorem consectetur, adipisicing elit. Iste at quod id minus!
-            </p>
-            <div class="from-them img-container">
-              <a
-                href="https://i.picsum.photos/id/366/2000/2000.jpg?hmac=VDsuEH3DWGI-oETDFdxhf242P4MTHeVoCAY7rRkYki0"
-                target="_blank"
-              >
-                <img
-                  src="https://i.picsum.photos/id/366/2000/2000.jpg?hmac=VDsuEH3DWGI-oETDFdxhf242P4MTHeVoCAY7rRkYki0"
-                />
-              </a>
-            </div>
-            <div class="from-me img-container">
-              <a
-                href="https://i.picsum.photos/id/366/2000/2000.jpg?hmac=VDsuEH3DWGI-oETDFdxhf242P4MTHeVoCAY7rRkYki0"
-                target="_blank"
-              >
-                <img
-                  src="https://i.picsum.photos/id/366/2000/2000.jpg?hmac=VDsuEH3DWGI-oETDFdxhf242P4MTHeVoCAY7rRkYki0"
-                />
-              </a>
-            </div>
-            <a
-              class="from-me file px-3 py-4 gap-3"
-              href="./assets/files/test.pdf"
-              download
-            >
-              <div class="file-icon">
-                <i class="ri-file-fill"></i>
-              </div>
-              <span>Some file's name</span>
-            </a>
-            <p class="from-them">
-              Lorem consectetur, adipisicing elit. Iste at quod id minus!
-            </p>
-            <a
-              class="from-them file px-3 py-4 gap-3"
-              href="./assets/files/test.pdf"
-              download
-            >
-              <div class="file-icon">
-                <i class="ri-file-fill"></i>
-              </div>
-              <span>Some file's name</span>
-            </a>
-            <p class="from-me">
-              Lorem consectetur, adipisicing elit. Iste at quod id minus!
-            </p>
-            <p class="from-me">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Consequatur earum impedit nemo! Animi, totam laborum?
-            </p>
-            <div class="from-me video-container">
-              <video
-                class="video-js vjs-theme-fantasy"
-                controls
-                data-setup="{}"
-              >
-                <source src="/assets/videos/disc.mp4" />
-              </video>
-            </div>
-            <div class="from-them video-container">
-              <video
-                class="video-js vjs-theme-fantasy"
-                controls
-                data-setup="{}"
-              >
-                <source src="/assets/videos/disc.mp4" />
-              </video>
-            </div>
+            {% for message in messages %}
+              {% if message.media  %}
+                {% if message.media_type == 'image' %}
+                  <div
+                    {% if request.user == message.user %}
+                      class="from-me img-container"
+                    {% else %}
+                      class="from-them img-container"
+                    {% endif %}
+                    >
+                    <a
+                      href="{{message.media.url}}"
+                      target="_blank"
+                    >
+                      <img
+                        src="{{message.media.url}}"
+                      />
+                    </a>
+                  </div>
+                {% elif message.media_type == 'video' %}
+                  <div
+                    {% if request.user == message.user %}
+                      class="from-me video-container"
+                    {% else %}
+                      class="from-them video-container"
+                    {% endif %}
+                    >
+                    <video
+                      class="video-js vjs-theme-fantasy"
+                      controls
+                      data-setup="{}"
+                    >
+                      <source src="{{message.media.url}}" />
+                    </video>
+                  </div>
+                {% else %}
+                  <a
+                    {% if request.user == message.user %}
+                      class="from-me file px-3 py-4 gap-3"
+                    {% else %}
+                      class="from-them file px-3 py-4 gap-3"
+                    {% endif %}
+                    href="{{message.media.url}}"
+                    download
+                  >
+                    <div class="file-icon">
+                      <i class="ri-file-fill"></i>
+                    </div>
+                    <span>{{message.media.name}}</span>
+                  </a>
+                {% endif %}
+              {% else %}
+                <p
+                    {% if request.user == message.user %}
+                      class="from-me"
+                    {% else %}
+                      class="from-them"
+                    {% endif %}
+                  >
+                  {{message.text}}
+                </p>
+              {% endif %}
+            {% endfor %}
           </div>
           <div
             class="chat-hotbar d-flex align-items-center px-2 w-100 position-absolute bottom-0"
@@ -746,7 +266,7 @@
               </div>
               <form
                 id="file-upload-form"
-                action=""
+                method="POST"
                 enctype="multipart/form-data"
               >
                 <input
@@ -855,4 +375,6 @@
     <div id="share-screen-displayer-remote" class="d-none">
       <video src="./assets/videos/disc.mp4" autoplay playsinline></video>
     </div>
+    {{ room_id|json_script:"room-id" }}
+    {{ current_user|json_script:"current-user" }}
 {% endblock content %}

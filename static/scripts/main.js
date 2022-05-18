@@ -1,17 +1,3 @@
-const thumbnails = [
-  ...document
-    .getElementById("desktop-people-list")
-    .querySelectorAll(".chat-thumbnail"),
-];
-thumbnails.forEach((thumbnail) =>
-  thumbnail.addEventListener("click", () => {
-    //remove other selected thumbnails
-    thumbnails.forEach((thumbnail) => thumbnail.classList.remove("selected"));
-    //add 'selected' to the clicked thumbnail
-    thumbnail.classList.add("selected");
-  })
-);
-
 const coverer = document.getElementById("coverer");
 const chatHeaderInfo = document.querySelector(".chat-info");
 const chatExtendedInfoBox = document.querySelector(".extended-info-box");
@@ -35,15 +21,13 @@ window.emojiPicker = new EmojiPicker({
   popupButtonClasses: "ri-emotion-line",
 });
 window.emojiPicker.discover();
+console.log(emojiPicker);
 
 //mobile people list toggling
 const peopleList = document.getElementById("mobile-people-list");
-const mobileThumbnails = peopleList.querySelectorAll(".chat-thumbnail");
-mobileThumbnails.forEach((thumbnail) =>
-  thumbnail.addEventListener("click", () => {
-    peopleList.classList.add("d-none");
-  })
-);
+if (window.location.pathname.length > 1) {
+  peopleList.classList.add("d-none");
+}
 
 //mobile chat back button
 const chatBackBtn = document.getElementById("mobile-chat-back-btn");
@@ -117,6 +101,7 @@ fileInput.onchange = () => {
 };
 
 const ajax = new XMLHttpRequest();
+console.log(window.location);
 function uploadFile() {
   const file = fileInput.files[0];
   totalSizeUnit.innerText = convertBytes(file.size, 2)[1];
@@ -127,10 +112,7 @@ function uploadFile() {
   ajax.upload.addEventListener("load", fileUploadCompleteHandler);
   ajax.upload.addEventListener("error", fileUploadErrorHandler);
   ajax.upload.addEventListener("abort", fileUploadAbortHandler);
-  ajax.open(
-    "POST",
-    "http://www.developphp.com/video/JavaScript/File-Upload-Progress-Bar-Meter-Tutorial-Ajax-PHP"
-  );
+  ajax.open("POST", `${window.location.href}/upload`);
   ajax.send(formdata);
 }
 function fileUploadProgressHandler(e) {
@@ -176,7 +158,12 @@ function convertBytes(bytes, decimals = 2) {
 const messageInput = document.getElementById("message-input");
 
 function sendMessage(str) {
-  console.log(str);
+  chatSocket.send(
+    JSON.stringify({
+      message: str,
+    })
+  );
+  messageInput.value = "";
 }
 
 sendBtn.onclick = (e) => {
@@ -191,58 +178,45 @@ sendBtn.onclick = (e) => {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Messages Socket~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const roomID = JSON.parse(document.getElementById("room-id").textContent);
+const currentUser = JSON.parse(
+  document.getElementById("current-user").textContent
+);
 const chatSocket = new WebSocket(
   "ws://" + window.location.host + `/ws/chat/${roomID}/`
 );
 chatSocket.onmessage = function (e) {
   const data = JSON.parse(e.data);
   console.log("DATA RECEIVED AND IS: ", data);
-
+  let tagToAdd = `<p class="${
+    currentUser === data.user ? "from-me" : "from-them"
+  }">{{message.text}}</p>`;
   if (data.hasOwnProperty("message")) {
-    strToAdd = `${data.user}: ${data.message}<br />`;
-    document.querySelector("#chat-log").innerHTML += strToAdd;
+    document.querySelector(".imessage").innerHTML += strToAdd;
   }
   //Else If a File has been received...
   else if (data.hasOwnProperty("file_type")) {
     if (data.file_type === "image")
-      strToAdd = `${data.user}: <img src="${data.file_url}" width="200" height="200" /><br />`;
+      strToAdd = `<img src="${data.file_url}" width="200" height="200" /><br />`;
     else if (data.file_type === "video")
-      strToAdd = `${data.user}: <video width="200" height="200" controls><source src="${data.file_url}"/></video><br />`;
-    else
-      strToAdd = `${data.user}: <a href="${data.file_url}">${data.file_name}</a><br />`;
+      strToAdd = `<video width="200" height="200" controls><source src="${data.file_url}"/></video><br />`;
+    else strToAdd = `<a href="${data.file_url}">${data.file_name}</a><br />`;
     document.querySelector("#chat-log").innerHTML += strToAdd;
   }
 };
 chatSocket.onclose = function (e) {
   console.error("Chat socket closed unexpectedly");
 };
-document.querySelector("#chat-message-input").focus();
-document.querySelector("#chat-message-input").onkeyup = function (e) {
-  if (e.keyCode === 13) {
-    // enter, return
-    document.querySelector("#chat-message-submit").click();
-  }
-};
-document.querySelector("#chat-message-submit").onclick = function (e) {
-  const messageInputDom = document.querySelector("#chat-message-input");
-  const message = messageInputDom.value;
-  chatSocket.send(
-    JSON.stringify({
-      message: message,
-    })
-  );
-  messageInputDom.value = "";
-};
 
-//MEDIA FORM
-document.querySelector("#media-form").addEventListener("submit", (e) => {
-  const form = e.target;
-  fetch(form.action, {
-    method: form.method,
-    body: new FormData(form),
-  }).catch((e) => console.log(e));
-  e.preventDefault();
-});
+document
+  .getElementById("message-send-form")
+  .querySelector('[data-type="input"]')
+  .addEventListener("keyup", (e) => {
+    if (e.keyCode === 13) {
+      // enter, return
+      sendBtn.click();
+      e.target.innerText = "";
+    }
+  });
 
 //Video Chat Config:
 const callSocket = new WebSocket(
