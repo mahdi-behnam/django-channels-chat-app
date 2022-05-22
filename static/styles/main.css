@@ -53,7 +53,7 @@ body {
 
 .app-left-col {
   position: relative;
-  z-index: 1;
+  z-index: 10;
   overflow: hidden;
 }
 
@@ -239,7 +239,7 @@ body {
 .chat-messages {
   background-color: var(--secondary-black);
   flex: 1;
-  padding-bottom: var(--chat-hotbar-height);
+  margin-bottom: var(--chat-hotbar-height);
 }
 .chat-hotbar {
   height: var(--chat-hotbar-height);
@@ -247,6 +247,9 @@ body {
   box-shadow: var(--top-shadow);
   position: relative;
   z-index: 1;
+}
+.chat-hotbar [data-type="input"]::before {
+  pointer-events: none;
 }
 .chat-hotbar .emoji-menu {
   min-width: 300px;

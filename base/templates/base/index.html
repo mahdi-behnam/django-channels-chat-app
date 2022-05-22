@@ -123,6 +123,7 @@
       </div>
       <!-- Chat -->
       <div class="col-12 col-lg-9 px-0">
+        {% if room_id %}
         <div class="chat-section d-flex flex-column position-relative">
           <div
             class="chat-header px-2 d-flex align-items-center position-relative"
@@ -135,7 +136,7 @@
                 class="avatar-small rounded-circle"
                 src="https://picsum.photos/200"
               />
-              <p class="m-0 ms-3">Someone</p>
+              <p class="m-0 ms-3">{{target_user}}</p>
               <p class="chat-buddy-bio d-none d-md-block m-0 mx-3">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Architecto illo dignissimos maxime natus, provident molestias.
@@ -150,7 +151,7 @@
               <div class="extended-img-container">
                 <img src="https://picsum.photos/500" />
               </div>
-              <p class="fs-5 my-2">My Name is sth</p>
+              <p class="fs-5 my-2">{{target_user}}</p>
               <hr class="w-75 mx-auto mb-2 mt-0" />
               <p dir="auto" class="complete-bio w-100 p-2 m-0">
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illum,
@@ -267,8 +268,10 @@
               <form
                 id="file-upload-form"
                 method="POST"
+                action="{% url 'room_upload' room_id %}"
                 enctype="multipart/form-data"
               >
+                {% csrf_token %}
                 <input
                   name="file"
                   id="attachment"
@@ -316,18 +319,34 @@
             </div>
           </div>
         </div>
+        {% endif %}
+      </div>
+    </div>
+    <div id="incoming-call">
+      <p class="text-white fs-4 mt-5 mb-5">{{target_user}} is calling you(Voice Call)...</p>
+      <div class="d-flex align-items-center justify-content-between px-3 gap-5">
+        <div id="incoming-call-accept-btn" class="icon-btn">
+          <span>Accept</span>
+          <i class="ri-check-line"></i>
+        </div>
+        <div id="incoming-call-reject-btn" class="icon-btn">
+          <span>Decline</span>
+          <i class="ri-close-line"></i>
+        </div>
       </div>
     </div>
     <div id="voice-call-displayer" class="d-none">
+      <audio id="voice-call-local-audio-tag" autoplay media-stream-tag class="d-none"></audio>
+      <audio id="voice-call-remote-audio-tag" autoplay media-stream-tag class="d-none"></audio>
       <div class="d-flex flex-column align-items-center h-100">
         <div class="bg-my-gray text-white w-100 text-center">
-          <p class="fs-4 m-4">SomeOne's Name</p>
+          <p class="fs-4 m-4">{{target_user}}</p>
         </div>
         <div class="called-user-img-container">
           <img src="https://picsum.photos/2000" />
         </div>
         <div class="call-icons text-white d-flex flex-row gap-3">
-          <div class="p-4 bg-info rounded-circle">
+          <div id='mute-voice-voice-call' class="p-4 bg-info rounded-circle">
             <i class="ri-mic-fill"></i>
           </div>
           <div id="end-voice-call" class="p-4 bg-danger rounded-circle">
@@ -337,15 +356,15 @@
       </div>
     </div>
     <div id="video-call-displayer" class="d-none">
-      <video src="./assets/videos/disc.mp4" autoplay playsinline></video>
+      <video id="video-call-remote-video-tag" autoplay playsinline media-stream-tag></video>
       <div id="local-video">
-        <video src="./assets/videos/disc.mp4" autoplay playsinline></video>
+        <video id="video-call-local-video-tag" autoplay playsinline media-stream-tag></video>
       </div>
       <div class="call-icons text-white d-flex flex-column flex-lg-row gap-3">
-        <div class="p-4 bg-info rounded-circle">
+        <div id='mute-video-video-call' class="p-4 bg-info rounded-circle">
           <i class="ri-vidicon-fill"></i>
         </div>
-        <div class="p-4 bg-info rounded-circle">
+        <div id='mute-voice-video-call' class="p-4 bg-info rounded-circle">
           <i class="ri-mic-fill"></i>
         </div>
         <div id="end-video-call" class="p-4 bg-danger rounded-circle">
@@ -360,10 +379,10 @@
         <div
           class="call-icons my-2 text-white d-flex flex-column flex-lg-row gap-3"
         >
-          <div class="p-4 bg-info rounded-circle">
+          <div id='mute-screen-share-screen' class="p-4 bg-info rounded-circle">
             <i class="ri-computer-fill"></i>
           </div>
-          <div class="p-4 bg-info rounded-circle">
+          <div id='mute-voice-share-screen' class="p-4 bg-info rounded-circle">
             <i class="ri-mic-fill"></i>
           </div>
           <div id="end-share-screen" class="p-4 bg-danger rounded-circle">
@@ -373,7 +392,7 @@
       </div>
     </div>
     <div id="share-screen-displayer-remote" class="d-none">
-      <video src="./assets/videos/disc.mp4" autoplay playsinline></video>
+      <video id="share-screen-remote-video-tag" autoplay playsinline media-stream-tag></video>
     </div>
     {{ room_id|json_script:"room-id" }}
     {{ current_user|json_script:"current-user" }}

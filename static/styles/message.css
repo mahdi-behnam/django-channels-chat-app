@@ -128,6 +128,7 @@ p.from-them::after {
   border-radius: 1.15rem;
   z-index: 1;
   position: relative;
+  object-fit: cover;
 }
 /* from-me img tail */
 .img-container.from-me::before {

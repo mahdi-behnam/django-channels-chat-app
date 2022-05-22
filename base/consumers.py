@@ -48,6 +48,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     # Receive File from Room Group:
     async def file_received(self, event):
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print(event.get('file_name'))
         # Send FileURL to Websocket:
         await self.send(text_data=json.dumps({
             'user': event.get('user'),
@@ -106,6 +108,7 @@ class CallConsumer(AsyncWebsocketConsumer):
                 {
                     'type': 'offer_received',
                     'offer': data.get('offer'),
+                    'call_type': data.get('callType'),
                     'sender': self.scope['user'].username,
                 })
 
@@ -136,6 +139,7 @@ class CallConsumer(AsyncWebsocketConsumer):
                 text_data=json.dumps(
                     {
                         'offer': event.get('offer'),
+                        'call_type': event.get('call_type'),
                         'sender': event.get('sender'),
                     }
                 )

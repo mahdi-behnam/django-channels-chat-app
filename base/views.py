@@ -86,11 +86,16 @@ def room(request, room_id):
     except Room.DoesNotExist:
         return redirect("index")
     messages = room.messages.all()
+    # Determining target user
+    for user in room.users.all():
+        if(user != request.user):
+            target_user = user
     context = {
         "room_id": int(room_id),
         'messages': messages,
         "chats": chats,
         'current_user': request.user.username,
+        'target_user': target_user,
     }
     return render(request, "base/index.html", context)
 
