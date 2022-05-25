@@ -14,6 +14,49 @@ coverer.addEventListener("click", () => {
   closeBtn.click();
 });
 
+//search user config
+const searchBox = document.getElementById("search-box");
+const searchThumbnails = [...document.getElementsByClassName("search-bar")];
+searchThumbnails.forEach(
+  (thumbnail) => (thumbnail.onclick = () => searchBox.classList.add("shown"))
+);
+const closeSearchBtn = document.getElementById("search-close-btn");
+const userSearchForm = document.getElementById("user-search-form");
+const searchInput = document.getElementById("search-input");
+const resultList = document.querySelector(".search-results-list");
+closeSearchBtn.onclick = () => searchBox.classList.remove("shown");
+userSearchForm.onsubmit = (e) => e.preventDefault();
+const sleep = (milliseconds) => {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+};
+searchInput.onkeyup = async (e) => {
+  await sleep(500);
+  const val = e.target.value;
+  console.log(val);
+  const url = `${userSearchForm.action}?q=${val}`;
+  const response = await fetch(url);
+  const result = await response.json();
+  const data = JSON.parse(result.data);
+  console.log(data);
+  resultList.innerHTML = "";
+  data.forEach((user) => {
+    resultList.innerHTML += `<li>
+    <a href="/chat/create_room/${user.fields.username}/" class="chat-thumbnail p-2 d-flex align-items-center">
+      <img
+        class="avatar rounded-circle"
+        src="https://picsum.photos/200"
+      />
+      <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
+        <p class="chat-title">
+          ${user.fields.username}
+        </p>
+      </div>
+    </a>
+    <hr class="hr-line mx-auto my-0" />
+  </li>`;
+  });
+};
+
 //emoji config
 window.emojiPicker = new EmojiPicker({
   emojiable_selector: "[data-emojiable=true]",
@@ -21,6 +64,8 @@ window.emojiPicker = new EmojiPicker({
   popupButtonClasses: "ri-emotion-line",
 });
 window.emojiPicker.discover();
+const emojiInput = document.querySelector('[data-type="input"]');
+emojiInput.setAttribute("dir", "auto");
 
 //mobile people list toggling
 const peopleList = document.getElementById("mobile-people-list");

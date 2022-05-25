@@ -1,8 +1,9 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from .models import Message, Room
 import mimetypes
 from channels.layers import get_channel_layer
@@ -12,16 +13,21 @@ from asgiref.sync import async_to_sync
 @login_required
 def index(request):
     q = request.GET.get('q')
-    username_query = q if (q is not None and not q.isspace()) else ''
-    users_result = User.objects.filter(username__icontains=username_query)
+    username_query = q if (q is not None and not q.isspace()) else None
+    if(q):
+        users_result = User.objects.filter(
+            username__icontains=username_query)
+        responseData = {
+            'data': serializers.serialize('json', users_result, fields=['username']),
+        }
+        return JsonResponse(responseData, safe=False)
+    else:
+        chats = request.user.rooms.exclude(messages__isnull=True)
 
-    chats = request.user.rooms.exclude(messages__isnull=True)
-
-    context = {
-        "users_result": users_result,
-        "chats": chats,
-    }
-    return render(request, "base/index.html", context)
+        context = {
+            "chats": chats,
+        }
+        return render(request, "base/index.html", context)
 
 
 def login_view(request):

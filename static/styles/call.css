@@ -3,7 +3,7 @@
   position: fixed;
   left: 50%;
   top: 20px;
-  z-index: 1000;
+  z-index: 1100;
   width: 500px;
   max-width: 90vw;
   height: 200px;
@@ -130,51 +130,6 @@
   overflow: hidden;
   box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.5);
   background-color: var(--secondary-black);
-}
-/* ~~~~~~~~~~~~~~~~~ Share Screen ~~~~~~~~~~~~~~~~~ */
-#share-screen-displayer {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  z-index: 1001;
-  width: 500px;
-  height: 200px;
-  border-radius: 8px;
-  box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.5);
-  background-color: var(--secondary-black);
-}
-#share-screen-displayer .call-icons {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-#share-screen-displayer .call-icons div {
-  width: 25px;
-  height: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 1.5rem;
-  transition: all ease 0.3s;
-}
-#share-screen-displayer .call-icons div:hover {
-  filter: brightness(60%);
-}
-#share-screen-displayer-remote {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 1000;
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--primary-black);
-}
-#share-screen-displayer-remote video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .call-icons .muted {

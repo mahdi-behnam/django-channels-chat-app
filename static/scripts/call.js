@@ -10,7 +10,6 @@ const incomingCallRejectBtn = document.getElementById(
 //call start btns
 const startVoiceCallBtn = document.getElementById("start-voice-call");
 const startVideoCallBtn = document.getElementById("start-video-call");
-const startShareScreenBtn = document.getElementById("start-share-screen");
 
 //call util btns
 const endVoiceCallBtn = document.getElementById("end-voice-call");
@@ -19,13 +18,8 @@ const muteVoiceVoiceCallBtn = document.getElementById("mute-voice-voice-call");
 const endVideoCallBtn = document.getElementById("end-video-call");
 const muteVoiceVideoCallBtn = document.getElementById("mute-voice-video-call");
 const muteVideoVideoCallBtn = document.getElementById("mute-video-video-call");
-
-const endShareScreenBtn = document.getElementById("end-share-screen");
-const muteScreenShareScreenBtn = document.getElementById(
-  "mute-screen-share-screen"
-);
-const muteVoiceShareScreenBtn = document.getElementById(
-  "mute-voice-share-screen"
+const muteScreenVideoCallBtn = document.getElementById(
+  "mute-screen-video-call"
 );
 
 //call mediaStream tags
@@ -41,17 +35,10 @@ const videoCallLocalVideoTag = document.getElementById(
 const videoCallRemoteVideoTag = document.getElementById(
   "video-call-remote-video-tag"
 );
-const shareScreenVideoTag = document.getElementById(
-  "share-screen-remote-video-tag"
-);
 
 //call displayers
 const voiceCallDisplayer = document.getElementById("voice-call-displayer");
 const videoCallDisplayer = document.getElementById("video-call-displayer");
-const shareScreenDisplayer = document.getElementById("share-screen-displayer");
-const remoteShareScreenDisplayer = document.getElementById(
-  "share-screen-displayer-remote"
-);
 
 //Config:
 const callSocket = new WebSocket(
@@ -60,6 +47,8 @@ const callSocket = new WebSocket(
 let peerConnection;
 let localStream;
 let remoteStream;
+let isScreenShared = false;
+let areUsersInVideoCall = false; //this is used to prevent incoming call popup when the user wants to switch back to video call after sharing screen.
 let servers = {
   iceServers: [
     {
@@ -79,6 +68,16 @@ callSocket.onmessage = function (e) {
   //If an Offer to make a call has been received...
   if (data.hasOwnProperty("offer")) {
     console.log("offer received !");
+    if (data.call_type === "share-screen") {
+      //we don't need the user to accept incoming share screen because he has already accepted the video call
+      makeAnswer(data);
+      return;
+    }
+    if (areUsersInVideoCall && data.call_type === "video-call") {
+      //we don't need the user to accept incoming video call because he has already accepted it before
+      makeAnswer(data);
+      return;
+    }
     //show incoming call box...
     incomingCallWindow.classList.add("shown");
     incomingCallAcceptBtn.onclick = () => {
@@ -88,8 +87,7 @@ callSocket.onmessage = function (e) {
         voiceCallDisplayer.classList.remove("d-none");
       } else if (data.call_type === "video-call") {
         videoCallDisplayer.classList.remove("d-none");
-      } else if (data.call_type === "share-screen") {
-        remoteShareScreenDisplayer.classList.remove("d-none");
+        areUsersInVideoCall = true;
       }
     };
     incomingCallRejectBtn.onclick = () => {
@@ -126,8 +124,6 @@ callSocket.onmessage = function (e) {
         voiceCallDisplayer.classList.add("d-none");
       if (!videoCallDisplayer.classList.contains("d-none"))
         videoCallDisplayer.classList.add("d-none");
-      if (!shareScreenDisplayer.classList.contains("d-none"))
-        shareScreenDisplayer.classList.add("d-none");
     }
   }
 };
@@ -148,12 +144,7 @@ const setLocalStream = async (type) => {
       audio: true,
     });
   } else if (type === "share-screen") {
-    localStream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-      audio: true,
-    });
-    //we don't need to show local stream to the user when 'sharing screen'...
-    return;
+    localStreamTag = videoCallLocalVideoTag;
   }
   localStreamTag.srcObject = localStream;
 };
@@ -165,10 +156,9 @@ const createPeerConnection = async (type) => {
   let remoteStreamTag;
   if (type === "voice-call") {
     remoteStreamTag = voiceCallRemoteAudioTag;
-  } else if (type === "video-call") {
+  } else if (type === "video-call" || type === "share-screen") {
+    areUsersInVideoCall = true;
     remoteStreamTag = videoCallRemoteVideoTag;
-  } else if (type === "share-screen") {
-    remoteStreamTag = shareScreenVideoTag;
   }
   remoteStreamTag.srcObject = remoteStream;
 
@@ -212,6 +202,7 @@ const makeOffer = async (type) => {
 };
 
 const makeAnswer = async (data) => {
+  console.log("MAKING ANSWER...");
   await setLocalStream(data.call_type);
   await createPeerConnection(data.call_type);
   await peerConnection.setRemoteDescription(data.offer);
@@ -240,9 +231,10 @@ const stopTracks = async () => {
 };
 
 const endCall = async () => {
-  if (peerConnection.connectionState !== "closed") {
+  if (peerConnection) {
     await peerConnection.close();
     stopTracks();
+    areUsersInVideoCall = false;
     callSocket.send(
       JSON.stringify({
         type: "call_status",
@@ -270,12 +262,6 @@ startVideoCallBtn.onclick = async () => {
   await makeOffer("video-call");
 };
 
-startShareScreenBtn.onclick = async () => {
-  shareScreenDisplayer.classList.remove("d-none");
-  await setLocalStream("share-screen");
-  await makeOffer("share-screen");
-};
-
 endVoiceCallBtn.onclick = () => {
   endCall();
   voiceCallDisplayer.classList.add("d-none");
@@ -283,12 +269,6 @@ endVoiceCallBtn.onclick = () => {
 endVideoCallBtn.onclick = () => {
   endCall();
   videoCallDisplayer.classList.add("d-none");
-};
-endShareScreenBtn.onclick = () => {
-  endCall();
-  shareScreenDisplayer.classList.add("d-none");
-  if (!remoteShareScreenDisplayer.classList.contains("d-none"))
-    remoteShareScreenDisplayer.classList.add("d-none");
 };
 
 //mute btns config:
@@ -302,18 +282,48 @@ muteVoiceVideoCallBtn.onclick = () => {
   localStream.getAudioTracks()[0].enabled = !currentState;
   muteVoiceVideoCallBtn.classList.toggle("muted");
 };
-muteVideoVideoCallBtn.onclick = () => {
+muteVideoVideoCallBtn.onclick = async () => {
+  if (isScreenShared) {
+    //screen is being shared so create a new peerconnection and start over...
+    localStream.getTracks().forEach((track) => track.stop());
+    await setLocalStream("video-call");
+    await makeOffer("video-call");
+    isScreenShared = false;
+    muteScreenVideoCallBtn.classList.add("muted");
+    muteVideoVideoCallBtn.classList.remove("muted");
+    return;
+  } else if (
+    muteScreenVideoCallBtn.classList.contains("muted") &&
+    muteVideoVideoCallBtn.classList.contains("muted")
+  ) {
+    //screen and video are not being shared...
+    localStream.getTracks().forEach((track) => track.stop());
+    await setLocalStream("video-call");
+    await makeOffer("video-call");
+    muteVideoVideoCallBtn.classList.remove("muted");
+    isScreenShared = false;
+    return;
+  }
   const currentState = localStream.getVideoTracks()[0].enabled;
   localStream.getVideoTracks()[0].enabled = !currentState;
   muteVideoVideoCallBtn.classList.toggle("muted");
 };
-muteVoiceShareScreenBtn.onclick = () => {
-  const currentState = localStream.getAudioTracks()[0].enabled;
-  localStream.getAudioTracks()[0].enabled = !currentState;
-  muteVoiceShareScreenBtn.classList.toggle("muted");
-};
-muteScreenShareScreenBtn.onclick = () => {
-  const currentState = localStream.getVideoTracks()[0].enabled;
-  localStream.getVideoTracks()[0].enabled = !currentState;
-  muteScreenShareScreenBtn.classList.toggle("muted");
+muteScreenVideoCallBtn.onclick = async () => {
+  if (isScreenShared) {
+    //stop sharing screen
+    const currentState = localStream.getVideoTracks()[0].enabled;
+    localStream.getVideoTracks()[0].enabled = !currentState;
+    isScreenShared = false;
+  } else {
+    //screen is not being shared so create a new peerconnection and start over...
+    localStream = await navigator.mediaDevices.getDisplayMedia({
+      audio: true,
+      video: true,
+    });
+    await setLocalStream("share-screen");
+    await makeOffer("share-screen");
+    isScreenShared = true;
+    muteVideoVideoCallBtn.classList.add("muted");
+  }
+  muteScreenVideoCallBtn.classList.toggle("muted");
 };

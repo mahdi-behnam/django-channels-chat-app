@@ -72,21 +72,64 @@ body {
   height: 35px;
   overflow: hidden;
 }
-.app-header .search-bar i {
+.app-header .search-bar > div span {
+  color: rgb(209, 209, 209);
+}
+.app-header .search-bar i,
+#search-box i {
   font-size: 20px;
   color: var(--primary-white);
 }
-.app-header .search-bar input {
-  border: none;
-  background-color: transparent;
-  width: 100%;
-  color: var(--primary-white);
+
+#search-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  transition: all ease 0.3s;
+  border-radius: 8px;
+  background-color: var(--primary-gray);
+  width: 350px;
+  height: 400px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 101;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
-.app-header .search-bar input::placeholder {
-  color: rgb(209, 209, 209);
+#search-box.shown {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: all;
 }
-.app-header .search-bar input:focus {
+#search-box .search-close-btn {
+  font-size: 1.5rem;
+  position: absolute;
+  top: 0px;
+  right: 5px;
+  cursor: pointer;
+}
+.search-input {
+  background: var(--primary-black);
+  min-height: 35px;
+  width: 90%;
+  margin: 2.25rem auto 0.5rem auto;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.search-input input {
   outline: none;
+  border: none;
+  background: none;
+  color: var(--primary-white);
+  line-height: 30px;
+  width: 100%;
+}
+.search-results-list {
+  overflow-y: auto;
 }
 
 .chat-thumbnails-list {

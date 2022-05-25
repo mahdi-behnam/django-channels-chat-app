@@ -22,10 +22,9 @@
             </div>
             <div class="search-bar mx-2 d-flex align-items-center">
               <i class="ri-search-line m-1"></i>
-              <input
-                type="text"
-                placeholder="Search for a user by username..."
-              />
+              <div class="d-flex align-items-center h-100">
+                <span>Search for a user by username...</span>
+              </div>
             </div>
           </div>
           <ul class="chat-thumbnails-list list-unstyled">
@@ -77,11 +76,10 @@
                 </a>
             </div>
             <div class="search-bar mx-2 d-flex align-items-center">
-              <i class="ri-search-line m-1"></i>
-              <input
-                type="text"
-                placeholder="Search for a user by username..."
-              />
+              <i class="ri-search-line m-1 me-2"></i>
+              <div class="d-flex align-items-center h-100">
+                <span>Search for a user by username...</span>
+              </div>
             </div>
           </div>
           <ul class="chat-thumbnails-list list-unstyled">
@@ -111,7 +109,7 @@
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
                       Dolor aperiam quas nisi optio excepturi porro?
                     </p>
-                    <span class="new-message-badge ms-auto">+99</span>
+                    {% comment %} <span class="new-message-badge ms-auto">+99</span> {% endcomment %}
                   </div>
                 </div>
               </a>
@@ -172,9 +170,7 @@
               <div id="start-video-call" class="icon">
                 <i class="ri-vidicon-fill"></i>
               </div>
-              <div id="start-share-screen" class="icon d-none d-lg-flex">
-                <i class="ri-computer-fill"></i>
-              </div>
+              
             </div>
           </div>
           <div class="chat-messages imessage overflow-auto">
@@ -255,7 +251,6 @@
                   placeholder="Type a message..."
                   data-emojiable="true"
                   data-emoji-input="unicode"
-                  dir="auto"
                 />
               </form>
             </div>
@@ -322,6 +317,19 @@
         {% endif %}
       </div>
     </div>
+    <div id="search-box">
+      <div id="search-close-btn" class="search-close-btn">
+        <i class="ri-close-fill"></i>
+      </div>
+      <div class="search-input">
+        <i class="ri-search-line m-1 me-2"></i>
+        <form id="user-search-form" action="{% url 'index' %}" method="GET" class="w-100">
+          <input id="search-input" dir='auto' type="text" placeholder="Search for a user by username..." />
+        </form>
+      </div>
+      <ul class="search-results-list list-unstyled">
+      </ul>
+    </div>
     <div id="incoming-call">
       <p class="text-white fs-4 mt-5 mb-5">{{target_user}} is calling you(Voice Call)...</p>
       <div class="d-flex align-items-center justify-content-between px-3 gap-5">
@@ -361,6 +369,9 @@
         <video id="video-call-local-video-tag" autoplay playsinline media-stream-tag></video>
       </div>
       <div class="call-icons text-white d-flex flex-column flex-lg-row gap-3">
+        <div id='mute-screen-video-call' class="p-4 bg-info rounded-circle muted">
+          <i class="ri-computer-fill"></i>
+        </div>
         <div id='mute-video-video-call' class="p-4 bg-info rounded-circle">
           <i class="ri-vidicon-fill"></i>
         </div>
@@ -372,28 +383,8 @@
         </div>
       </div>
     </div>
-    <div id="share-screen-displayer" class="d-none">
-      <div class="container text-white text-center">
-        <p class="m-4 fs-3">Sharing your screen...</p>
-        <hr class="w-75 mx-auto" />
-        <div
-          class="call-icons my-2 text-white d-flex flex-column flex-lg-row gap-3"
-        >
-          <div id='mute-screen-share-screen' class="p-4 bg-info rounded-circle">
-            <i class="ri-computer-fill"></i>
-          </div>
-          <div id='mute-voice-share-screen' class="p-4 bg-info rounded-circle">
-            <i class="ri-mic-fill"></i>
-          </div>
-          <div id="end-share-screen" class="p-4 bg-danger rounded-circle">
-            <i class="ri-phone-fill"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="share-screen-displayer-remote" class="d-none">
-      <video id="share-screen-remote-video-tag" autoplay playsinline media-stream-tag></video>
-    </div>
+    
+    
     {{ room_id|json_script:"room-id" }}
     {{ current_user|json_script:"current-user" }}
 {% endblock content %}
