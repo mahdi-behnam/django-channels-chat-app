@@ -1,3 +1,4 @@
+@import "./loader.css";
 @import "../assets/fonts/Yekan/Yekan.css";
 @import "./message.css";
 @import "./call.css";
@@ -61,9 +62,112 @@ body {
   height: var(--app-header-height);
 }
 
-.app-header .logout-btn a {
+#more-menu {
+  background-color: var(--primary-black);
+  box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  right: 10px;
   color: var(--primary-white);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-20%);
+  transition: all ease 0.3s;
+}
+
+#more-menu.shown {
+  pointer-events: all;
+  opacity: 1;
+  transform: translateY(0%);
+}
+#edit-profile-btn {
+  transition: all ease 0.3s;
+}
+#edit-profile-btn:hover {
+  filter: brightness(60%);
+}
+
+#edit-profile-window {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  transition: all ease 0.3s;
+  border-radius: 8px;
+  background-color: var(--primary-gray);
+  width: 350px;
+  height: 500px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 101;
+  overflow: hidden;
+  color: var(--primary-white);
+}
+#edit-profile-window.shown {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: all;
+}
+#edit-profile-window .atsign {
+  color: #248bf5;
+  font-size: 1.25rem;
+  font-weight: 900;
+  margin-right: 0.125rem;
+}
+#edit-profile-window .close-profile-window-btn {
+  font-size: 1.5rem;
+  position: absolute;
+  top: 0px;
+  right: 5px;
+  cursor: pointer;
+}
+#edit-profile-window .edit-profile-img-container {
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+}
+.edit-profile-img-container img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+#edit-profile-img-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #248bf5;
+  font-size: 22px;
+  width: 28px;
+  height: 28px;
+  padding: 1.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+#edit-profile-window .edit-bio {
+  font-size: 0.75rem;
+  color: var(--primary-white);
+  font-weight: 400;
+  background-color: var(--primary-black);
+  border-radius: 8px;
+  flex: 1;
+  overflow-y: auto;
+  resize: none;
+}
+#edit-profile-window .btn {
+  color: var(--primary-white);
+  padding: 0.5rem 1.5rem;
+  background: #41e644;
+}
+
+.app-header .logout-btn {
   text-decoration: none;
+  border-radius: 0 !important;
 }
 
 .app-header .search-bar {
@@ -71,6 +175,7 @@ body {
   border-radius: 5px;
   height: 35px;
   overflow: hidden;
+  cursor: pointer;
 }
 .app-header .search-bar > div span {
   color: rgb(209, 209, 209);
@@ -181,6 +286,7 @@ body {
 .avatar {
   width: 65px;
   height: 65px;
+  object-fit: cover;
 }
 .avatar-small {
   width: 55px;
@@ -253,11 +359,12 @@ body {
 .extended-img-container img {
   width: 200px;
   height: 200px;
+  object-fit: cover;
 }
 .extended-info-box .complete-bio {
   font-size: 0.75rem;
   color: var(--primary-white);
-  font-weight: 200;
+  font-weight: 400;
   background-color: var(--primary-black);
   border-radius: 8px;
   flex: 1;
@@ -279,6 +386,11 @@ body {
 .icon:hover {
   background-color: grey;
 }
+.icon.small-icon {
+  font-size: 20px;
+  height: 40px;
+  width: 40px;
+}
 .chat-messages {
   background-color: var(--secondary-black);
   flex: 1;
@@ -290,6 +402,22 @@ body {
   box-shadow: var(--top-shadow);
   position: relative;
   z-index: 1;
+}
+#mobile-chat-back-btn {
+  text-decoration: none;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  border-radius: 50%;
+  color: var(--primary-white);
+  transition: all ease 0.3s;
+}
+#mobile-chat-back-btn:hover {
+  background-color: grey;
 }
 .chat-hotbar [data-type="input"]::before {
   pointer-events: none;
@@ -532,6 +660,19 @@ body {
 .form-control:focus-within {
   box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
   border-color: #86b7fe;
+}
+
+#error-message {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+}
+#js-error-message {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
 }
 
 /* ----------Color Classes---------- */

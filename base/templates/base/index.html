@@ -1,5 +1,9 @@
 {% extends 'main.html' %}
+{% load static %}
 {% block content %}
+    <div id="loader-wrapper">
+      <div class="loader"></div>
+    </div>
     <div id="coverer" class="d-none"></div>
     <div class="row m-0">
       <!-- People's List -->
@@ -12,13 +16,11 @@
           <div class="app-header d-flex flex-column shadow-sm bg-my-black">
             <div class="d-flex align-items-center">
               <h1 class="fs-4 fw-lighter p-3 ps-2 m-0 text-white">Chat App</h1>
-                <a
-                  class="d-flex align-items-center justify-content-between gap-1 logout-btn ms-auto me-2 btn btn-danger"
-                  href="{% url 'logout' %}"
-                >
-                  <span>Logout</span>
-                  <i class="ri-logout-box-line"></i>
-                </a>
+              <div class="position-relative ms-auto me-2">
+                <div class="icon small-icon more-menu-btn">
+                  <i class="ri-more-2-fill"></i>
+                </div>
+              </div>
             </div>
             <div class="search-bar mx-2 d-flex align-items-center">
               <i class="ri-search-line m-1"></i>
@@ -31,26 +33,22 @@
             {% for chat in  chats %}
             <li>
               <a href={% url 'room' chat.id  %} class="chat-thumbnail p-2 d-flex align-items-center">
+                {% for user in chat.users.all %}
+                  {% if request.user != user %}
                 <img
                   class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
+                  src="{{user.profile.image_model.image.url}}"
+                  onerror="this.src='{% static '/assets/images/no-profile-image.jpg' %}'"
                 />
                 <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">
-                    {% for user in chat.users.all %}
-                      {% if request.user != user %}
-                        {{user}}
-                      {% endif %}
-                    {% endfor %}
-                  </p>
+                  <p class="chat-title">{{user}}</p>
                   <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Dolor aperiam quas nisi optio excepturi porro?
-                    </p>
-                    <span class="new-message-badge ms-auto">+99</span>
+                    <p class="chat-last-message ps-2">{% if chat.get_last_message %}{{chat.get_last_message}}{% else %}<span class="text-success">-Media-</span>{% endif %}</p>
+                    {% comment %} <span class="new-message-badge ms-auto">+99</span> {% endcomment %}
                   </div>
                 </div>
+                  {% endif %}
+                {% endfor %}
               </a>
               <hr class="hr-line mx-auto my-0" />
             </li>
@@ -67,13 +65,11 @@
           <div class="app-header d-flex flex-column shadow-sm bg-my-black">
             <div class="d-flex align-items-center">
               <h1 class="fs-4 fw-lighter p-3 ps-2 m-0 text-white">Chat App</h1>
-                <a
-                  class="d-flex align-items-center justify-content-between gap-1 logout-btn ms-auto me-2 btn btn-danger"
-                  href="{% url 'logout' %}"
-                >
-                  <span>Logout</span>
-                  <i class="ri-logout-box-line"></i>
-                </a>
+              <div class="position-relative ms-auto me-2">
+                <div class="icon small-icon more-menu-btn">
+                  <i class="ri-more-2-fill"></i>
+                </div>
+              </div>
             </div>
             <div class="search-bar mx-2 d-flex align-items-center">
               <i class="ri-search-line m-1 me-2"></i>
@@ -92,26 +88,22 @@
                   class="chat-thumbnail p-2 d-flex align-items-center"
                 {% endif %}
                 >
-                <img
-                  class="avatar rounded-circle"
-                  src="https://picsum.photos/200"
-                />
-                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
-                  <p class="chat-title">
-                    {% for user in chat.users.all %}
-                      {% if request.user != user %}
-                        {{user}}
-                      {% endif %}
-                    {% endfor %}
-                  </p>
-                  <div class="d-flex align-items-center">
-                    <p class="chat-last-message ps-2">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Dolor aperiam quas nisi optio excepturi porro?
-                    </p>
-                    {% comment %} <span class="new-message-badge ms-auto">+99</span> {% endcomment %}
+                {% for user in chat.users.all %}
+                  {% if request.user != user %}
+                  <img
+                    class="avatar rounded-circle"
+                    src="{{user.profile.image_model.image.url}}"
+                    onerror="this.src='{% static '/assets/images/no-profile-image.jpg' %}'"
+                  />
+                  <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
+                    <p class="chat-title">{{user}}</p>
+                    <div class="d-flex align-items-center">
+                      <p class="chat-last-message ps-2">{% if chat.get_last_message %}{{chat.get_last_message}}{% else %}<span class="text-success">-Media-</span>{% endif %}</p>
+                      {% comment %} <span class="new-message-badge ms-auto">+99</span> {% endcomment %}
+                    </div>
                   </div>
-                </div>
+                  {% endif %}
+                {% endfor %}
               </a>
               <hr class="hr-line mx-auto my-0" />
             </li>
@@ -126,19 +118,17 @@
           <div
             class="chat-header px-2 d-flex align-items-center position-relative"
           >
-            <div id="mobile-chat-back-btn" class="icon mx-2 d-lg-none">
+            <a href="{% url 'index' %}" id="mobile-chat-back-btn" class="d-lg-none me-1">
               <i class="ri-arrow-left-line"></i>
-            </div>
+            </a>
             <div class="chat-info d-flex align-items-center overflow-hidden">
               <img
                 class="avatar-small rounded-circle"
-                src="https://picsum.photos/200"
+                src="{{target_user.profile.image_model.image.url}}"
+                onerror="this.src='{% static '/assets/images/no-profile-image.jpg' %}'"
               />
               <p class="m-0 ms-3">{{target_user}}</p>
-              <p class="chat-buddy-bio d-none d-md-block m-0 mx-3">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Architecto illo dignissimos maxime natus, provident molestias.
-              </p>
+              <p class="chat-buddy-bio d-none d-md-block m-0 mx-3">{% if target_user.profile.bio %}{{target_user.profile.bio}}{% endif %}</p>
             </div>
             <div
               class="extended-info-box p-3 d-flex flex-column align-items-center"
@@ -147,19 +137,14 @@
                 <i class="ri-close-fill"></i>
               </div>
               <div class="extended-img-container">
-                <img src="https://picsum.photos/500" />
+                <img 
+                  src="{{target_user.profile.image_model.image.url}}"
+                  onerror="this.src='{% static '/assets/images/no-profile-image.jpg' %}'"
+                />
               </div>
               <p class="fs-5 my-2">{{target_user}}</p>
               <hr class="w-75 mx-auto mb-2 mt-0" />
-              <p dir="auto" class="complete-bio w-100 p-2 m-0">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illum,
-                amet. Cumque molestias nemo unde nobis error reprehenderit
-                cupiditate provident impedit, harum quae architecto aliquam
-                eaque, debitis nam? Eum illo perspiciatis quas molestiae
-                doloribus fugiat voluptates laborum eligendi assumenda. Veniam
-                similique temporibus libero unde quia neque eaque voluptatibus!
-                Soluta, quisquam sit.
-              </p>
+              <p dir="auto" class="complete-bio w-100 p-2 m-0">{% if target_user.profile.bio %}{{target_user.profile.bio}}{% endif %}</p>
             </div>
             <div
               class="d-flex align-items-center justify-content-between gap-2"
@@ -173,7 +158,7 @@
               
             </div>
           </div>
-          <div class="chat-messages imessage overflow-auto">
+          <div class="chat-messages imessage">
             {% for message in messages %}
               {% if message.media  %}
                 {% if message.media_type == 'image' %}
@@ -190,6 +175,7 @@
                     >
                       <img
                         src="{{message.media.url}}"
+                        onerror="this.src='{% static '/assets/images/no-image.jpg' %}';"
                       />
                     </a>
                   </div>
@@ -317,6 +303,51 @@
         {% endif %}
       </div>
     </div>
+    <div id="more-menu">
+      <div id="edit-profile-btn" class="d-flex align-items-center btn text-nowrap gap-2 text-white">
+        <i class="ri-edit-box-line"></i>
+        <span>
+          Edit Profile
+        </span>
+      </div>
+      <a
+        class="d-flex align-items-center gap-2 logout-btn btn btn-danger"
+        href="{% url 'logout' %}"
+      >
+        <i class="ri-logout-box-line"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+    <div id="edit-profile-window" class="p-3 d-flex flex-column align-items-center">
+      <div class="close-profile-window-btn">
+        <i class="ri-close-fill"></i>
+      </div>
+      <form method="POST" action="{% url 'update_profile' current_user %}" enctype="multipart/form-data" class="h-100 w-100 d-flex flex-column align-items-center">
+        {% csrf_token %}
+        <div class="position-relative">
+          <div class="edit-profile-img-container">
+            <img id="edit-profile-img" src="{{current_user.profile.image_model.image.url}}" onerror="this.src='{% static '/assets/images/no-profile-image.jpg' %}'"/>
+          </div>
+          <div id="edit-profile-img-btn">
+            <i class="ri-image-add-line"></i>
+          </div>
+          <input
+            name="file"
+            id="edit-profile-img-input"
+            type="file"
+            accept=".jpg,.jpeg,.png"
+            style="display: none"
+          />
+        </div>
+        <p class="fs-5 my-2"><span class="atsign">@</span>{{current_user}}</p>
+        <hr class="w-75 mx-auto mb-2 mt-0" />
+        <textarea dir="auto" placeholder="Type your bio here..." name="bio" dir="auto" class="edit-bio w-100 p-2 m-0">{% if current_user.profile.bio %}{{current_user.profile.bio}}{% endif %}</textarea>
+        <div class="d-flex align-items-center justify-content-between w-100 mt-2">
+          <button class="btn" type="submit">Save</button>
+          <button id="profile-edit-cancel-btn" class="btn bg-danger">Cancel</button>
+        </div>
+      </form>
+    </div>
     <div id="search-box">
       <div id="search-close-btn" class="search-close-btn">
         <i class="ri-close-fill"></i>
@@ -331,7 +362,7 @@
       </ul>
     </div>
     <div id="incoming-call">
-      <p class="text-white fs-4 mt-5 mb-5">{{target_user}} is calling you(Voice Call)...</p>
+      <p class="text-white fs-4 mt-5 mb-5">{{target_user}} is calling you...</p>
       <div class="d-flex align-items-center justify-content-between px-3 gap-5">
         <div id="incoming-call-accept-btn" class="icon-btn">
           <span>Accept</span>
@@ -351,7 +382,10 @@
           <p class="fs-4 m-4">{{target_user}}</p>
         </div>
         <div class="called-user-img-container">
-          <img src="https://picsum.photos/2000" />
+          <img 
+            src="{{target_user.profile.image_model.image.url}}"
+            onerror="this.src='{% static '/assets/images/no-profile-image.jpg' %}'" 
+            />
         </div>
         <div class="call-icons text-white d-flex flex-row gap-3">
           <div id='mute-voice-voice-call' class="p-4 bg-info rounded-circle">
@@ -369,7 +403,7 @@
         <video id="video-call-local-video-tag" autoplay playsinline media-stream-tag></video>
       </div>
       <div class="call-icons text-white d-flex flex-column flex-lg-row gap-3">
-        <div id='mute-screen-video-call' class="p-4 bg-info rounded-circle muted">
+        <div id='mute-screen-video-call' class="p-4 bg-info rounded-circle d-none d-lg-flex muted">
           <i class="ri-computer-fill"></i>
         </div>
         <div id='mute-video-video-call' class="p-4 bg-info rounded-circle">
@@ -386,5 +420,5 @@
     
     
     {{ room_id|json_script:"room-id" }}
-    {{ current_user|json_script:"current-user" }}
+    {{ current_user.username|json_script:"current-user" }}
 {% endblock content %}

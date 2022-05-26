@@ -31,6 +31,9 @@
     <title>SignUp - Chat App</title>
   </head>
   <body>
+    <div id="loader-wrapper">
+      <div class="loader"></div>
+    </div>
     <div class="container h-100 w-100 position-relative">
       <div class="signup-card">
         <div class="card-header">
@@ -51,7 +54,7 @@
                 class="ps-3"
                 type="password"
                 id="password"
-                name="password"
+                name="password1"
               />
               <div class="eye-icon px-2">
                 <i id="password-eye" class="ri-eye-off-fill"></i>
@@ -63,12 +66,16 @@
               >Repeat Password</label
             >
             <div class="form-control px-0 d-flex align-items-center">
-              <input class="ps-3" type="password" id="password-repeat" />
+              <input name='password2' class="ps-3" type="password" id="password-repeat" />
               <div class="eye-icon px-2">
                 <i id="password-repeat-eye" class="ri-eye-off-fill"></i>
               </div>
             </div>
           </div>
+          {% if error_message %}
+            <p id="error-message" class="m-0 text-danger">*{{error_message}}</p>
+          {% endif %}
+          <p id="js-error-message" class="m-0 text-danger"></p>
           <button
             type="submit"
             class="signup-btn btn btn-primary mx-auto my-auto"

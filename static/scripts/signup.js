@@ -1,9 +1,25 @@
+//loader config...
+window.onload = () => setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
+function removeLoader() {
+  document.getElementById("loader-wrapper").classList.add("loaded");
+}
+
+//signup config...
 const usernameInput = document.getElementById("username");
 const usernameFormControl = usernameInput.parentElement;
 const passwordInput = document.getElementById("password");
 const passwordEye = document.getElementById("password-eye");
 const passwordRepeatInput = document.getElementById("password-repeat");
 const passwordRepeatEye = document.getElementById("password-repeat-eye");
+const jsErrorMessage = document.getElementById("js-error-message");
+const signupBtn = document.querySelector(".signup-btn");
+
+signupBtn.onclick = (e) => {
+  if (passwordInput.value !== passwordRepeatInput.value) {
+    e.preventDefault();
+    jsErrorMessage.innerText = "*Passwords don't match!";
+  }
+};
 
 passwordEye.onclick = () => {
   if (passwordInput.type === "text") {

@@ -1,3 +1,10 @@
+//loader config...
+window.onload = () => setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
+function removeLoader() {
+  document.getElementById("loader-wrapper").classList.add("loaded");
+}
+
+//login config...
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const passwordEye = document.getElementById("password-eye");

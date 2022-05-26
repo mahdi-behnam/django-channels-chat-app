@@ -4,7 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-from .models import Message, Room
+from django.contrib.auth.forms import UserCreationForm
+from .models import Message, Room, UserImage, UserProfile
 import mimetypes
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -23,14 +24,15 @@ def index(request):
         return JsonResponse(responseData, safe=False)
     else:
         chats = request.user.rooms.exclude(messages__isnull=True)
-
         context = {
             "chats": chats,
+            'current_user': request.user,
         }
         return render(request, "base/index.html", context)
 
 
 def login_view(request):
+    error_message = None
     if(request.user.is_authenticated):
         return redirect("index")
     elif(request.method == "POST"):
@@ -41,12 +43,12 @@ def login_view(request):
             login(request, user)
             return redirect("index")
         else:
-            print("failed to log in")
-            return redirect("login")
-    return render(request, "base/login.html")
+            error_message = "Username or Password is incorrect. Try Again!"
+    return render(request, "base/login.html", {'error_message': error_message})
 
 
 def register_view(request):
+    error_message = None
     if(request.user.is_authenticated):
         return redirect("index")
 
@@ -55,19 +57,43 @@ def register_view(request):
         userExists = True if User.objects.filter(
             username=username).exists() else False
         if userExists:
-            return redirect("register")
-        password = request.POST['password']
-        user = User.objects.create_user(username=username, password=password)
-        login(request, user)
-        return redirect("index")
+            error_message = "User Already Exists!"
+            return render(request, "base/register.html", {'error_message': error_message})
+        else:
+            form = UserCreationForm(request.POST)
+            print(form.is_valid())
+            if(form.is_valid()):
+                user = form.save()
+                profile = UserProfile.objects.create(user=user)
+                user.profile = profile
+                user.save()
+                login(request, user)
+                return redirect("index")
+            else:
+                error_message = "Password is too weak!"
 
-    return render(request, "base/register.html")
+    return render(request, "base/register.html", {'error_message': error_message})
 
 
 @login_required
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+
+@login_required
+def user_profile_update(request, username):
+    if(request.method == "POST"
+       and request.user.username == username):
+        user = User.objects.get(username=username)
+        if(request.FILES):
+            image = UserImage.objects.create(image=request.FILES.get('file'))
+            user.profile.image_model = image
+        if(request.POST.get('bio')):
+            bio = request.POST.get('bio')
+            user.profile.bio = bio
+        user.profile.save()
+    return redirect('index')
 
 
 @login_required
@@ -100,7 +126,7 @@ def room(request, room_id):
         "room_id": int(room_id),
         'messages': messages,
         "chats": chats,
-        'current_user': request.user.username,
+        'current_user': request.user,
         'target_user': target_user,
     }
     return render(request, "base/index.html", context)

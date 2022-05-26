@@ -1,30 +1,101 @@
+//loader config...
+window.onload = () => setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
+function removeLoader() {
+  document.getElementById("loader-wrapper").classList.add("loaded");
+}
+
+//extended target user info box config...
 const coverer = document.getElementById("coverer");
 const chatHeaderInfo = document.querySelector(".chat-info");
 const chatExtendedInfoBox = document.querySelector(".extended-info-box");
-const closeBtn = chatExtendedInfoBox.querySelector(".close-btn");
-chatHeaderInfo.addEventListener("click", () => {
-  coverer.classList.add("active");
-  chatExtendedInfoBox.classList.add("show");
-});
-closeBtn.addEventListener("click", () => {
-  coverer.classList.remove("active");
-  chatExtendedInfoBox.classList.remove("show");
+if (chatExtendedInfoBox) {
+  const closeBtn = chatExtendedInfoBox.querySelector(".close-btn");
+  chatHeaderInfo.addEventListener("click", () => {
+    coverer.classList.add("active");
+    chatExtendedInfoBox.classList.add("show");
+  });
+  closeBtn.addEventListener("click", () => {
+    coverer.classList.remove("active");
+    chatExtendedInfoBox.classList.remove("show");
+  });
+  coverer.addEventListener("click", () => {
+    closeBtn.click();
+  });
+}
+
+//more menu config
+const moreMenuBtns = document.querySelectorAll("more-menu-btn");
+const moreMenu = document.getElementById("more-menu");
+const editProfileBtn = document.getElementById("edit-profile-btn");
+const editProfileWindow = document.getElementById("edit-profile-window");
+const editProfileCloseBtn = editProfileWindow.querySelector(
+  ".close-profile-window-btn"
+);
+const editProfileCancelBtn = document.getElementById("profile-edit-cancel-btn");
+const editProfileImg = document.getElementById("edit-profile-img");
+const editProfileImgBtn = document.getElementById("edit-profile-img-btn");
+const editProfileImgInput = document.getElementById("edit-profile-img-input");
+moreMenuBtns.forEach(
+  (btn) =>
+    (btn.onclick = (e) => {
+      e.stopPropagation();
+      moreMenu.classList.add("shown");
+    })
+);
+moreMenu.addEventListener("click", (e) => e.stopPropagation());
+editProfileWindow.addEventListener("click", (e) => e.stopPropagation());
+window.addEventListener("click", () => {
+  if (moreMenu.classList.contains("shown")) {
+    moreMenu.classList.remove("shown");
+  }
 });
 coverer.addEventListener("click", () => {
-  closeBtn.click();
+  editProfileCloseBtn.click();
 });
+editProfileBtn.onclick = () => {
+  coverer.classList.add("active");
+  editProfileWindow.classList.add("shown");
+};
+editProfileCloseBtn.onclick = () => {
+  coverer.classList.remove("active");
+  moreMenu.classList.remove("shown");
+  editProfileWindow.classList.remove("shown");
+};
+editProfileCancelBtn.onclick = (e) => {
+  e.preventDefault();
+  editProfileCloseBtn.click();
+};
+editProfileImgBtn.onclick = () => {
+  editProfileImgInput.click();
+};
+editProfileImgInput.onchange = (e) => {
+  const selectedImg = e.target.files[0];
+  console.log(selectedImg);
+  editProfileImg.src = URL.createObjectURL(selectedImg);
+};
 
 //search user config
 const searchBox = document.getElementById("search-box");
 const searchThumbnails = [...document.getElementsByClassName("search-bar")];
-searchThumbnails.forEach(
-  (thumbnail) => (thumbnail.onclick = () => searchBox.classList.add("shown"))
-);
+const searchInput = document.getElementById("search-input");
 const closeSearchBtn = document.getElementById("search-close-btn");
 const userSearchForm = document.getElementById("user-search-form");
-const searchInput = document.getElementById("search-input");
 const resultList = document.querySelector(".search-results-list");
-closeSearchBtn.onclick = () => searchBox.classList.remove("shown");
+searchThumbnails.forEach(
+  (thumbnail) =>
+    (thumbnail.onclick = () => {
+      coverer.classList.add("active");
+      searchBox.classList.add("shown");
+      searchInput.focus();
+    })
+);
+coverer.addEventListener("click", () => {
+  closeSearchBtn.click();
+});
+closeSearchBtn.addEventListener("click", () => {
+  coverer.classList.remove("active");
+  searchBox.classList.remove("shown");
+});
 userSearchForm.onsubmit = (e) => e.preventDefault();
 const sleep = (milliseconds) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -32,7 +103,7 @@ const sleep = (milliseconds) => {
 searchInput.onkeyup = async (e) => {
   await sleep(500);
   const val = e.target.value;
-  console.log(val);
+  if (val === "") return;
   const url = `${userSearchForm.action}?q=${val}`;
   const response = await fetch(url);
   const result = await response.json();
@@ -65,19 +136,13 @@ window.emojiPicker = new EmojiPicker({
 });
 window.emojiPicker.discover();
 const emojiInput = document.querySelector('[data-type="input"]');
-emojiInput.setAttribute("dir", "auto");
+if (emojiInput) emojiInput.setAttribute("dir", "auto");
 
 //mobile people list toggling
 const peopleList = document.getElementById("mobile-people-list");
 if (window.location.pathname.length > 1) {
   peopleList.classList.add("d-none");
 }
-
-//mobile chat back button
-const chatBackBtn = document.getElementById("mobile-chat-back-btn");
-chatBackBtn.addEventListener("click", () => {
-  peopleList.classList.remove("d-none");
-});
 
 //~~~~~~~~~~~hotbar file config~~~~~~~~~~~~~~~
 const uploadStateBox = document.getElementById("upload-state");
@@ -95,12 +160,13 @@ const cancelAttachmentBtn = document.getElementById("cancel-attached-file-btn");
 const sendBtn = document.getElementById("send-btn");
 const messageForm = document.getElementById("message-send-form");
 const fileForm = document.getElementById("file-upload-form");
-
-window.addEventListener("click", () => {
-  if (uploadStateBox.classList.contains("shown")) {
-    uploadStateBox.classList.remove("shown");
-  }
-});
+if (uploadStateBox) {
+  window.addEventListener("click", () => {
+    if (uploadStateBox.classList.contains("shown")) {
+      uploadStateBox.classList.remove("shown");
+    }
+  });
+}
 uploadStateBox.addEventListener("click", (e) => {
   e.stopPropagation();
 });

@@ -31,6 +31,9 @@
     <title>Login - Chat App</title>
   </head>
   <body>
+    <div id="loader-wrapper">
+      <div class="loader"></div>
+    </div>
     <div class="container h-100 w-100 position-relative">
       <div class="login-card">
         <div class="card-header">
@@ -53,6 +56,9 @@
               </div>
             </div>
           </div>
+          {% if error_message %}
+            <p id="error-message" class="m-0 text-danger">*{{error_message}}</p>
+          {% endif %}
           <button
             type="submit"
             class="login-btn btn btn-primary mx-auto my-auto"
