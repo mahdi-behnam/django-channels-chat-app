@@ -24,9 +24,9 @@ if (chatExtendedInfoBox) {
 }
 
 //more menu config
-const moreMenuBtns = document.querySelectorAll("more-menu-btn");
-const moreMenu = document.getElementById("more-menu");
-const editProfileBtn = document.getElementById("edit-profile-btn");
+const moreMenuBtns = [...document.querySelectorAll(".more-menu-btn")];
+const moreMenus = [...document.querySelectorAll(".more-menu")];
+const editProfileBtns = [...document.querySelectorAll(".edit-profile-btn")];
 const editProfileWindow = document.getElementById("edit-profile-window");
 const editProfileCloseBtn = editProfileWindow.querySelector(
   ".close-profile-window-btn"
@@ -39,26 +39,31 @@ moreMenuBtns.forEach(
   (btn) =>
     (btn.onclick = (e) => {
       e.stopPropagation();
-      moreMenu.classList.add("shown");
+      moreMenus.forEach((menu) => menu.classList.add("shown"));
     })
 );
-moreMenu.addEventListener("click", (e) => e.stopPropagation());
+moreMenus.forEach((menu) =>
+  menu.addEventListener("click", (e) => e.stopPropagation())
+);
 editProfileWindow.addEventListener("click", (e) => e.stopPropagation());
 window.addEventListener("click", () => {
-  if (moreMenu.classList.contains("shown")) {
-    moreMenu.classList.remove("shown");
+  if (moreMenus[0].classList.contains("shown")) {
+    moreMenus.forEach((menu) => menu.classList.remove("shown"));
   }
 });
 coverer.addEventListener("click", () => {
   editProfileCloseBtn.click();
 });
-editProfileBtn.onclick = () => {
-  coverer.classList.add("active");
-  editProfileWindow.classList.add("shown");
-};
+editProfileBtns.forEach(
+  (btn) =>
+    (btn.onclick = () => {
+      coverer.classList.add("active");
+      editProfileWindow.classList.add("shown");
+    })
+);
 editProfileCloseBtn.onclick = () => {
   coverer.classList.remove("active");
-  moreMenu.classList.remove("shown");
+  moreMenus.forEach((menu) => menu.classList.remove("shown"));
   editProfileWindow.classList.remove("shown");
 };
 editProfileCancelBtn.onclick = (e) => {

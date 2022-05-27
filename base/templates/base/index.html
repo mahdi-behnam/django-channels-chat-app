@@ -20,6 +20,21 @@
                 <div class="icon small-icon more-menu-btn">
                   <i class="ri-more-2-fill"></i>
                 </div>
+                <div class="more-menu">
+                  <div class="edit-profile-btn d-flex align-items-center btn text-nowrap gap-2 text-white">
+                    <i class="ri-edit-box-line"></i>
+                    <span>
+                      Edit Profile
+                    </span>
+                  </div>
+                  <a
+                    class="d-flex align-items-center gap-2 logout-btn btn btn-danger"
+                    href="{% url 'logout' %}"
+                  >
+                    <i class="ri-logout-box-line"></i>
+                    <span>Logout</span>
+                  </a>
+                </div>
               </div>
             </div>
             <div class="search-bar mx-2 d-flex align-items-center">
@@ -68,6 +83,21 @@
               <div class="position-relative ms-auto me-2">
                 <div class="icon small-icon more-menu-btn">
                   <i class="ri-more-2-fill"></i>
+                </div>
+                <div class="more-menu">
+                  <div class="edit-profile-btn d-flex align-items-center btn text-nowrap gap-2 text-white">
+                    <i class="ri-edit-box-line"></i>
+                    <span>
+                      Edit Profile
+                    </span>
+                  </div>
+                  <a
+                    class="d-flex align-items-center gap-2 logout-btn btn btn-danger"
+                    href="{% url 'logout' %}"
+                  >
+                    <i class="ri-logout-box-line"></i>
+                    <span>Logout</span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -302,21 +332,6 @@
         </div>
         {% endif %}
       </div>
-    </div>
-    <div id="more-menu">
-      <div id="edit-profile-btn" class="d-flex align-items-center btn text-nowrap gap-2 text-white">
-        <i class="ri-edit-box-line"></i>
-        <span>
-          Edit Profile
-        </span>
-      </div>
-      <a
-        class="d-flex align-items-center gap-2 logout-btn btn btn-danger"
-        href="{% url 'logout' %}"
-      >
-        <i class="ri-logout-box-line"></i>
-        <span>Logout</span>
-      </a>
     </div>
     <div id="edit-profile-window" class="p-3 d-flex flex-column align-items-center">
       <div class="close-profile-window-btn">

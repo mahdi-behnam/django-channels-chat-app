@@ -62,13 +62,13 @@ body {
   height: var(--app-header-height);
 }
 
-#more-menu {
+.more-menu {
   background-color: var(--primary-black);
   box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.5);
   border-radius: 8px;
   overflow: hidden;
   position: absolute;
-  top: 0;
+  top: 40px;
   right: 10px;
   color: var(--primary-white);
   pointer-events: none;
@@ -77,15 +77,15 @@ body {
   transition: all ease 0.3s;
 }
 
-#more-menu.shown {
+.more-menu.shown {
   pointer-events: all;
   opacity: 1;
   transform: translateY(0%);
 }
-#edit-profile-btn {
+.edit-profile-btn {
   transition: all ease 0.3s;
 }
-#edit-profile-btn:hover {
+.edit-profile-btn:hover {
   filter: brightness(60%);
 }
 
