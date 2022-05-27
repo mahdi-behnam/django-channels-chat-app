@@ -7,10 +7,6 @@
   overflow-x: hidden;
 }
 
-.imessage p:nth-child(1) {
-  margin: 0;
-}
-
 .imessage p {
   border-radius: 1.15rem;
   line-height: 1.25;

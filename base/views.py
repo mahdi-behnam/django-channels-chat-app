@@ -68,9 +68,7 @@ def register_view(request):
                 user.save()
                 login(request, user)
                 return redirect("index")
-            else:
-                error_message = "Couldn't Register with these values!"
-
+        error_message = "Couldn't register with these values!"
     return render(request, "base/register.html", {'error_message': error_message})
 
 
