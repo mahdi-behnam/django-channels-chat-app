@@ -116,10 +116,6 @@ searchInput.onkeyup = async (e) => {
   data.forEach((user) => {
     resultList.innerHTML += `<li>
     <a href="/chat/create_room/${user.fields.username}/" class="chat-thumbnail p-2 d-flex align-items-center">
-      <img
-        class="avatar rounded-circle"
-        src="https://picsum.photos/200"
-      />
       <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
         <p class="chat-title">
           ${user.fields.username}
