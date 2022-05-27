@@ -291,6 +291,7 @@ body {
 .avatar-small {
   width: 55px;
   height: 55px;
+  object-fit: cover;
 }
 
 .chat-title {
