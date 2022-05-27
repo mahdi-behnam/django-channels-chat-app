@@ -64,10 +64,8 @@ let servers = {
 
 callSocket.onmessage = function (e) {
   const data = JSON.parse(e.data);
-  console.log("message event triggered : => ", data);
   //If an Offer to make a call has been received...
   if (data.hasOwnProperty("offer")) {
-    console.log("offer received !");
     if (data.call_type === "share-screen") {
       //we don't need the user to accept incoming share screen because he has already accepted the video call
       makeAnswer(data);
@@ -103,19 +101,16 @@ callSocket.onmessage = function (e) {
   }
   // Else If an Answer to a call has been received...
   else if (data.hasOwnProperty("answer")) {
-    console.log("answer received !");
     addAnswer(data.answer);
   }
   // Else If an Ice Candidate for a call has been received...
   else if (data.hasOwnProperty("ice")) {
-    console.log("ice received !");
     if (peerConnection) {
       addIce(data.ice);
     }
   }
   // Else If a call status event has been received...
   else if (data.hasOwnProperty("status")) {
-    console.log("call status has been received !");
     if (data.status === "ended") {
       if (peerConnection) peerConnection.close();
       stopTracks();
@@ -202,7 +197,6 @@ const makeOffer = async (type) => {
 };
 
 const makeAnswer = async (data) => {
-  console.log("MAKING ANSWER...");
   await setLocalStream(data.call_type);
   await createPeerConnection(data.call_type);
   await peerConnection.setRemoteDescription(data.offer);

@@ -61,7 +61,6 @@ def register_view(request):
             return render(request, "base/register.html", {'error_message': error_message})
         else:
             form = UserCreationForm(request.POST)
-            print(form.is_valid())
             if(form.is_valid()):
                 user = form.save()
                 profile = UserProfile.objects.create(user=user)

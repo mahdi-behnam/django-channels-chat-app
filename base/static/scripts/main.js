@@ -5,7 +5,6 @@ const chatSocket = new WebSocket(
 );
 chatSocket.onmessage = function (e) {
   const data = JSON.parse(e.data);
-  console.log("DATA RECEIVED AND IS: ", data);
 
   if (data.hasOwnProperty("message")) {
     strToAdd = `${data.user}: ${data.message}<br />`;
@@ -78,27 +77,22 @@ const endCallBtn = document.getElementById("end-call");
 
 callSocket.onmessage = function (e) {
   const data = JSON.parse(e.data);
-  console.log("onmessage event received : => ", data);
   //If an Offer to make a call has been received...
   if (data.hasOwnProperty("offer")) {
-    console.log("offer received !");
     makeAnswer(data.offer);
   }
   // Else If an Answer to a call has been received...
   else if (data.hasOwnProperty("answer")) {
-    console.log("answer received !");
     addAnswer(data.answer);
   }
   // Else If an Ice Candidate for a call has been received...
   else if (data.hasOwnProperty("ice")) {
-    console.log("ice received !");
     if (peerConnection) {
       addIce(data.ice);
     }
   }
   // Else If a call status event has been received...
   else if (data.hasOwnProperty("status")) {
-    console.log("call status has been received !");
     if (data.status === "ended") {
       if (peerConnection) peerConnection.close();
       stopTracks();

@@ -75,7 +75,6 @@ editProfileImgBtn.onclick = () => {
 };
 editProfileImgInput.onchange = (e) => {
   const selectedImg = e.target.files[0];
-  console.log(selectedImg);
   editProfileImg.src = URL.createObjectURL(selectedImg);
 };
 
@@ -113,7 +112,6 @@ searchInput.onkeyup = async (e) => {
   const response = await fetch(url);
   const result = await response.json();
   const data = JSON.parse(result.data);
-  console.log(data);
   resultList.innerHTML = "";
   data.forEach((user) => {
     resultList.innerHTML += `<li>
@@ -204,7 +202,6 @@ fileInput.onchange = () => {
   //if there are any files
   if (fileInput.files.length && !uploadStateBox.classList.contains("shown")) {
     resetUploadStateBox();
-    console.log("we should set everything now!");
     const [name, extension] = fileInput.files[0].name.split(".");
     let shortName = name + "." + extension;
     if (name.length > 10) {

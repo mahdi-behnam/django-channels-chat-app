@@ -25,7 +25,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Recieve Message from Websocket:
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        print(text_data_json.get('message'))
         # If the websocket has sent a message:
         if(text_data_json.get('message')):
             message_text = text_data_json.get('message')
@@ -48,8 +47,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     # Receive File from Room Group:
     async def file_received(self, event):
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print(event.get('file_name'))
         # Send FileURL to Websocket:
         await self.send(text_data=json.dumps({
             'user': event.get('user'),
@@ -88,8 +85,6 @@ class CallConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         event_type = text_data_json.get('type')
         data = text_data_json.get('data')
-        print("````````````````````````````````````")
-        print(data)
 
         # If the websocket has sent ice candidates:
         if(event_type == 'ice'):
