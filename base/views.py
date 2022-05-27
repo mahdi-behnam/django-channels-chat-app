@@ -69,7 +69,7 @@ def register_view(request):
                 login(request, user)
                 return redirect("index")
             else:
-                error_message = "Password is too weak!"
+                error_message = "Couldn't Register with these values!"
 
     return render(request, "base/register.html", {'error_message': error_message})
 
