@@ -1,0 +1,51 @@
+{% extends 'main.html' %} 
+{% load static %}
+{% block content %} 
+<div id="chat-log">
+  {% for message in messages %}
+  {{message.user.username}}: 
+  {% if message.media %}
+    {% if message.media_type == 'image' %}
+      <img width="200" height="200" src="{{message.media.url}}" />
+    {% elif message.media_type == 'video' %}
+      <video width="320" height="240" controls>
+        <source src="{{message.media.url}}" />
+        Your browser does not support the video tag.
+      </video>
+    {% else %}
+      <a href="{{message.media.url}}">{{message.media.name}}</a>
+    {% endif %}
+  {% else %}
+    {{message.text}}
+  {% endif %} 
+  <br />
+{% endfor %}
+</div>
+
+<input id="chat-message-input" type="text" size="50" />
+<input id="chat-message-submit" type="button" value="Send Message!" />
+<form
+  method="POST"
+  action="{% url 'room_upload' room_id %}"
+  enctype="multipart/form-data"
+  id="media-form"
+>
+  {% csrf_token %}
+  <input id="chat-media-input" type="file" name="file" />
+  <input id="chat-file-submit" type="submit" value="Send FILE!" />
+</form>
+<p>THIS IS THE ROOM_ID: {{room_id}}</p>
+{{ room_id|json_script:"room-id" }}
+<button id="start-call">START CALL</button>
+<button id="end-call">END CALL</button>
+<button id="logger">Log Everything</button>
+<br>
+<div id="videos">
+  <video id="local-user" autoplay playsinline></video>
+  <video id="remote-user" autoplay playsinline></video>
+</div>
+<script>
+  username = "{{request.user}}"
+</script>
+<script src="{% static 'scripts/main.js' %}" ></script>
+{% endblock content %}

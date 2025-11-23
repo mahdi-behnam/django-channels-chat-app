@@ -1,0 +1,439 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+    <div id="loader-wrapper">
+      <div class="loader"></div>
+    </div>
+    <div id="coverer" class="d-none"></div>
+    <div class="row m-0">
+      <!-- People's List -->
+      <!-- for Mobiles and small screens -->
+      <div
+        id="mobile-people-list"
+        class="app-left-col d-block d-lg-none col-12 bg-my-black px-0 text-white"
+      >
+        <div class="d-flex flex-column">
+          <div class="app-header d-flex flex-column shadow-sm bg-my-black">
+            <div class="d-flex align-items-center">
+              <h1 class="fs-4 fw-lighter p-3 ps-2 m-0 text-white">Chat App</h1>
+              <div class="position-relative ms-auto me-2">
+                <div class="icon small-icon more-menu-btn">
+                  <i class="ri-more-2-fill"></i>
+                </div>
+                <div class="more-menu">
+                  <div class="edit-profile-btn d-flex align-items-center btn text-nowrap gap-2 text-white">
+                    <i class="ri-edit-box-line"></i>
+                    <span>
+                      Edit Profile
+                    </span>
+                  </div>
+                  <a
+                    class="d-flex align-items-center gap-2 logout-btn btn btn-danger"
+                    href="{% url 'logout' %}"
+                  >
+                    <i class="ri-logout-box-line"></i>
+                    <span>Logout</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="search-bar mx-2 d-flex align-items-center">
+              <i class="ri-search-line m-1"></i>
+              <div class="d-flex align-items-center h-100">
+                <span>Search for a user by username...</span>
+              </div>
+            </div>
+          </div>
+          <ul class="chat-thumbnails-list list-unstyled">
+            {% for chat in  chats %}
+            <li>
+              <a href={% url 'room' chat.id  %} class="chat-thumbnail p-2 d-flex align-items-center">
+                {% for user in chat.users.all %}
+                  {% if request.user != user %}
+                <img
+                  class="avatar rounded-circle"
+                  src="{{user.profile.image_model.image.url}}"
+                  onerror="this.src='{% static '/assets/images/no-profile-image.jpg' %}'"
+                />
+                <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
+                  <p class="chat-title">{{user}}</p>
+                  <div class="d-flex align-items-center">
+                    <p class="chat-last-message ps-2">{% if chat.get_last_message %}{{chat.get_last_message}}{% else %}<span class="text-success">-Media-</span>{% endif %}</p>
+                    {% comment %} <span class="new-message-badge ms-auto">+99</span> {% endcomment %}
+                  </div>
+                </div>
+                  {% endif %}
+                {% endfor %}
+              </a>
+              <hr class="hr-line mx-auto my-0" />
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <!-- ...for Desktops -->
+      <div
+        id="desktop-people-list"
+        class="app-left-col d-none d-lg-block col-3 bg-my-black px-0 text-white"
+      >
+        <div class="d-flex flex-column">
+          <div class="app-header d-flex flex-column shadow-sm bg-my-black">
+            <div class="d-flex align-items-center">
+              <h1 class="fs-4 fw-lighter p-3 ps-2 m-0 text-white">Chat App</h1>
+              <div class="position-relative ms-auto me-2">
+                <div class="icon small-icon more-menu-btn">
+                  <i class="ri-more-2-fill"></i>
+                </div>
+                <div class="more-menu">
+                  <div class="edit-profile-btn d-flex align-items-center btn text-nowrap gap-2 text-white">
+                    <i class="ri-edit-box-line"></i>
+                    <span>
+                      Edit Profile
+                    </span>
+                  </div>
+                  <a
+                    class="d-flex align-items-center gap-2 logout-btn btn btn-danger"
+                    href="{% url 'logout' %}"
+                  >
+                    <i class="ri-logout-box-line"></i>
+                    <span>Logout</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="search-bar mx-2 d-flex align-items-center">
+              <i class="ri-search-line m-1 me-2"></i>
+              <div class="d-flex align-items-center h-100">
+                <span>Search for a user by username...</span>
+              </div>
+            </div>
+          </div>
+          <ul class="chat-thumbnails-list list-unstyled">
+            {% for chat in  chats %}
+            <li>
+              <a href={% url 'room' chat.id  %} 
+                {% if chat.id == room_id %}
+                  class="chat-thumbnail selected p-2 d-flex align-items-center"
+                {% else %}
+                  class="chat-thumbnail p-2 d-flex align-items-center"
+                {% endif %}
+                >
+                {% for user in chat.users.all %}
+                  {% if request.user != user %}
+                  <img
+                    class="avatar rounded-circle"
+                    src="{{user.profile.image_model.image.url}}"
+                    onerror="this.src='{% static '/assets/images/no-profile-image.jpg' %}'"
+                  />
+                  <div class="ps-3 d-flex w-100 pe-2 flex-column overflow-hidden">
+                    <p class="chat-title">{{user}}</p>
+                    <div class="d-flex align-items-center">
+                      <p class="chat-last-message ps-2">{% if chat.get_last_message %}{{chat.get_last_message}}{% else %}<span class="text-success">-Media-</span>{% endif %}</p>
+                      {% comment %} <span class="new-message-badge ms-auto">+99</span> {% endcomment %}
+                    </div>
+                  </div>
+                  {% endif %}
+                {% endfor %}
+              </a>
+              <hr class="hr-line mx-auto my-0" />
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <!-- Chat -->
+      <div class="col-12 col-lg-9 px-0">
+        {% if room_id %}
+        <div class="chat-section d-flex flex-column position-relative">
+          <div
+            class="chat-header px-2 d-flex align-items-center position-relative"
+          >
+            <a href="{% url 'index' %}" id="mobile-chat-back-btn" class="d-lg-none me-1">
+              <i class="ri-arrow-left-line"></i>
+            </a>
+            <div class="chat-info d-flex align-items-center overflow-hidden">
+              <img
+                class="avatar-small rounded-circle"
+                src="{{target_user.profile.image_model.image.url}}"
+                onerror="this.src='{% static '/assets/images/no-profile-image.jpg' %}'"
+              />
+              <p class="m-0 ms-3">{{target_user}}</p>
+              <p class="chat-buddy-bio d-none d-md-block m-0 mx-3">{% if target_user.profile.bio %}{{target_user.profile.bio}}{% endif %}</p>
+            </div>
+            <div
+              class="extended-info-box p-3 d-flex flex-column align-items-center"
+            >
+              <div class="close-btn">
+                <i class="ri-close-fill"></i>
+              </div>
+              <div class="extended-img-container">
+                <img 
+                  src="{{target_user.profile.image_model.image.url}}"
+                  onerror="this.src='{% static '/assets/images/no-profile-image.jpg' %}'"
+                />
+              </div>
+              <p class="fs-5 my-2">{{target_user}}</p>
+              <hr class="w-75 mx-auto mb-2 mt-0" />
+              <p dir="auto" class="complete-bio w-100 p-2 m-0">{% if target_user.profile.bio %}{{target_user.profile.bio}}{% endif %}</p>
+            </div>
+            <div
+              class="d-flex align-items-center justify-content-between gap-2"
+            >
+              <div id="start-voice-call" class="icon">
+                <i class="ri-phone-fill"></i>
+              </div>
+              <div id="start-video-call" class="icon">
+                <i class="ri-vidicon-fill"></i>
+              </div>
+              
+            </div>
+          </div>
+          <div class="chat-messages imessage">
+            {% for message in messages %}
+              {% if message.media  %}
+                {% if message.media_type == 'image' %}
+                  <div
+                    {% if request.user == message.user %}
+                      class="from-me img-container"
+                    {% else %}
+                      class="from-them img-container"
+                    {% endif %}
+                    >
+                    <a
+                      href="{{message.media.url}}"
+                      target="_blank"
+                    >
+                      <img
+                        src="{{message.media.url}}"
+                        onerror="this.src='{% static '/assets/images/no-image.jpg' %}';"
+                      />
+                    </a>
+                  </div>
+                {% elif message.media_type == 'video' %}
+                  <div
+                    {% if request.user == message.user %}
+                      class="from-me video-container"
+                    {% else %}
+                      class="from-them video-container"
+                    {% endif %}
+                    >
+                    <video
+                      class="video-js vjs-theme-fantasy"
+                      controls
+                      data-setup="{}"
+                    >
+                      <source src="{{message.media.url}}" />
+                    </video>
+                  </div>
+                {% else %}
+                  <a
+                    {% if request.user == message.user %}
+                      class="from-me file px-3 py-4 gap-3"
+                    {% else %}
+                      class="from-them file px-3 py-4 gap-3"
+                    {% endif %}
+                    href="{{message.media.url}}"
+                    download
+                  >
+                    <div class="file-icon">
+                      <i class="ri-file-fill"></i>
+                    </div>
+                    <span>{{message.media.name}}</span>
+                  </a>
+                {% endif %}
+              {% else %}
+                <p
+                    {% if request.user == message.user %}
+                      class="from-me"
+                    {% else %}
+                      class="from-them"
+                    {% endif %}
+                  >
+                  {{message.text}}
+                </p>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div
+            class="chat-hotbar d-flex align-items-center px-2 w-100 position-absolute bottom-0"
+          >
+            <div class="message-input-container position-relative">
+              <form id="message-send-form" action="">
+                <input
+                  id="message-input"
+                  name="message"
+                  class="message-input"
+                  type="text"
+                  placeholder="Type a message..."
+                  data-emojiable="true"
+                  data-emoji-input="unicode"
+                />
+              </form>
+            </div>
+            <div
+              class="position-relative d-flex align-items-center justify-content-between ms-2"
+            >
+              <div id="attachment-btn" class="icon">
+                <i class="ri-attachment-2"></i>
+              </div>
+              <form
+                id="file-upload-form"
+                method="POST"
+                action="{% url 'room_upload' room_id %}"
+                enctype="multipart/form-data"
+              >
+                {% csrf_token %}
+                <input
+                  name="file"
+                  id="attachment"
+                  type="file"
+                  style="display: none"
+                />
+              </form>
+              <div
+                id="upload-state"
+                class="d-flex flex-column justify-content-start"
+              >
+                <div class="d-flex align-items-center justify-content-between">
+                  <span id="current-state">Pending to Send!</span>
+                  <span id="current-percent">0%</span>
+                </div>
+                <div
+                  class="d-flex align-items-center justify-content-between mt-1"
+                >
+                  <span id="attached-file-name"></span>
+                  <div
+                    id="cancel-attached-file-btn"
+                    class="bg-danger d-flex align-items-center"
+                  >
+                    <i class="ri-delete-bin-fill"></i>
+                  </div>
+                </div>
+                <p class="size-values m-0">
+                  <span id="uploaded-size">0.00</span>
+                  <span id="uploaded-size-unit">B</span>
+                  <span>/</span>
+                  <span id="total-size">0.00</span>
+                  <span id="total-size-unit">B</span>
+                </p>
+                <div class="progress-bar">
+                  <div
+                    id="progress-thumb"
+                    class="thumb"
+                    style="width: 0%"
+                  ></div>
+                </div>
+              </div>
+              <div id="send-btn" class="icon ms-2">
+                <i class="ri-send-plane-fill"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    <div id="edit-profile-window" class="p-3 d-flex flex-column align-items-center">
+      <div class="close-profile-window-btn">
+        <i class="ri-close-fill"></i>
+      </div>
+      <form method="POST" action="{% url 'update_profile' current_user %}" enctype="multipart/form-data" class="h-100 w-100 d-flex flex-column align-items-center">
+        {% csrf_token %}
+        <div class="position-relative">
+          <div class="edit-profile-img-container">
+            <img id="edit-profile-img" src="{{current_user.profile.image_model.image.url}}" onerror="this.src='{% static '/assets/images/no-profile-image.jpg' %}'"/>
+          </div>
+          <div id="edit-profile-img-btn">
+            <i class="ri-image-add-line"></i>
+          </div>
+          <input
+            name="file"
+            id="edit-profile-img-input"
+            type="file"
+            accept=".jpg,.jpeg,.png"
+            style="display: none"
+          />
+        </div>
+        <p class="fs-5 my-2"><span class="atsign">@</span>{{current_user}}</p>
+        <hr class="w-75 mx-auto mb-2 mt-0" />
+        <textarea dir="auto" placeholder="Type your bio here..." name="bio" dir="auto" class="edit-bio w-100 p-2 m-0">{% if current_user.profile.bio %}{{current_user.profile.bio}}{% endif %}</textarea>
+        <div class="d-flex align-items-center justify-content-between w-100 mt-2">
+          <button class="btn" type="submit">Save</button>
+          <button id="profile-edit-cancel-btn" class="btn bg-danger">Cancel</button>
+        </div>
+      </form>
+    </div>
+    <div id="search-box">
+      <div id="search-close-btn" class="search-close-btn">
+        <i class="ri-close-fill"></i>
+      </div>
+      <div class="search-input">
+        <i class="ri-search-line m-1 me-2"></i>
+        <form id="user-search-form" action="{% url 'index' %}" method="GET" class="w-100">
+          <input id="search-input" dir='auto' type="text" placeholder="Search for a user by username..." />
+        </form>
+      </div>
+      <ul class="search-results-list list-unstyled">
+      </ul>
+    </div>
+    <div id="incoming-call">
+      <p class="text-white fs-4 mt-5 mb-5">{{target_user}} is calling you...</p>
+      <div class="d-flex align-items-center justify-content-between px-3 gap-5">
+        <div id="incoming-call-accept-btn" class="icon-btn">
+          <span>Accept</span>
+          <i class="ri-check-line"></i>
+        </div>
+        <div id="incoming-call-reject-btn" class="icon-btn">
+          <span>Decline</span>
+          <i class="ri-close-line"></i>
+        </div>
+      </div>
+    </div>
+    <div id="voice-call-displayer" class="d-none">
+      <audio id="voice-call-local-audio-tag" autoplay media-stream-tag class="d-none"></audio>
+      <audio id="voice-call-remote-audio-tag" autoplay media-stream-tag class="d-none"></audio>
+      <div class="d-flex flex-column align-items-center h-100">
+        <div class="bg-my-gray text-white w-100 text-center">
+          <p class="fs-4 m-4">{{target_user}}</p>
+        </div>
+        <div class="called-user-img-container">
+          <img 
+            src="{{target_user.profile.image_model.image.url}}"
+            onerror="this.src='{% static '/assets/images/no-profile-image.jpg' %}'" 
+            />
+        </div>
+        <div class="call-icons text-white d-flex flex-row gap-3">
+          <div id='mute-voice-voice-call' class="p-4 bg-info rounded-circle">
+            <i class="ri-mic-fill"></i>
+          </div>
+          <div id="end-voice-call" class="p-4 bg-danger rounded-circle">
+            <i class="ri-phone-fill"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="video-call-displayer" class="d-none">
+      <video id="video-call-remote-video-tag" autoplay playsinline media-stream-tag></video>
+      <div id="local-video">
+        <video id="video-call-local-video-tag" autoplay playsinline media-stream-tag></video>
+      </div>
+      <div class="call-icons text-white d-flex flex-column flex-lg-row gap-3">
+        <div id='mute-screen-video-call' class="p-4 bg-info rounded-circle d-none d-lg-flex muted">
+          <i class="ri-computer-fill"></i>
+        </div>
+        <div id='mute-video-video-call' class="p-4 bg-info rounded-circle">
+          <i class="ri-vidicon-fill"></i>
+        </div>
+        <div id='mute-voice-video-call' class="p-4 bg-info rounded-circle">
+          <i class="ri-mic-fill"></i>
+        </div>
+        <div id="end-video-call" class="p-4 bg-danger rounded-circle">
+          <i class="ri-phone-fill"></i>
+        </div>
+      </div>
+    </div>
+    
+    
+    {{ room_id|json_script:"room-id" }}
+    {{ current_user.username|json_script:"current-user" }}
+{% endblock content %}
