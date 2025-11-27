@@ -40,6 +40,9 @@ pip install -r requirements.txt
 CREATE DATABASE django_channels_chat_app_db;
 CREATE USER django_channels_chat_app_web WITH PASSWORD 'mahdi_chat_app';
 GRANT ALL PRIVILEGES ON DATABASE django_channels_chat_app_db TO django_channels_chat_app_web;
+\c django_channels_chat_app_db
+GRANT ALL PRIVILEGES ON SCHEMA public TO django_channels_chat_app_web;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO django_channels_chat_app_web;
 ```
 
 3. Run migrations and create a superuser (optional)
