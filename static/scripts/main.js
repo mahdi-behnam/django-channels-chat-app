@@ -130,7 +130,8 @@ searchInput.onkeyup = async (e) => {
 //emoji config
 window.emojiPicker = new EmojiPicker({
   emojiable_selector: "[data-emojiable=true]",
-  assetsPath: "http://onesignal.github.io/emoji-picker/lib/img/",
+  // CDN that ships the sprites for emoji-picker 1.1.5
+  assetsPath: "https://cdnjs.cloudflare.com/ajax/libs/emoji-picker/1.1.5/img/",
   popupButtonClasses: "ri-emotion-line",
 });
 window.emojiPicker.discover();
