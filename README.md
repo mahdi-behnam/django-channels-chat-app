@@ -58,7 +58,7 @@ python manage.py createsuperuser
 - Django ASGI app
 
 ```bash
-python manage.py runserver    # or: daphne chat_app.asgi:application
+python manage.py runserver    # or:  python -m daphne -b 127.0.0.1 -p 8000 chat_app.asgi:application
 ```
 
 5. Open the app at http://localhost:8000, register two users, start a chat, and initiate voice/video calls or screen share.
